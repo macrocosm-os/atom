@@ -1,7 +1,7 @@
 import functools
 from typing import Optional
 
-from utils.generic import run_in_subprocess
+from chain.generic import run_in_subprocess
 
 import bittensor as bt
 from bittensor.extrinsics.serving import publish_metadata
