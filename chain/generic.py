@@ -3,6 +3,7 @@ import multiprocessing
 
 from typing import Any
 
+
 def _wrapped_func(func: functools.partial, queue: multiprocessing.Queue):
     """Wraps the provided function to catch exceptions and put them on the queue.
 
@@ -16,6 +17,7 @@ def _wrapped_func(func: functools.partial, queue: multiprocessing.Queue):
     except (Exception, BaseException) as e:
         # Catch exceptions here to add them to the queue.
         queue.put(e)
+
 
 def run_in_subprocess(func: functools.partial, ttl: int, mode="fork") -> Any:
     """Runs the provided function on a subprocess with 'ttl' seconds to complete.

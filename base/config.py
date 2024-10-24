@@ -3,6 +3,7 @@ import argparse
 import bittensor as bt
 from loguru import logger
 
+
 def check_config(cls, config: "bt.Config"):
     r"""Checks/validates the config namespace object."""
     bt.logging.check_config(config)
@@ -97,6 +98,7 @@ def add_miner_args(cls, parser):
         default="miner",
     )
 
+
 def add_validator_args(cls, parser):
     """Add validator specific arguments to the parser."""
 
@@ -151,6 +153,7 @@ def add_validator_args(cls, parser):
         help="The maximum number of TAO allowed to query a validator with a vpermit.",
         default=4096,
     )
+
 
 def config(cls):
     """

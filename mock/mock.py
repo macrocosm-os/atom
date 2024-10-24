@@ -1,4 +1,5 @@
-import bittensor as bt 
+import bittensor as bt
+
 
 class MockSubtensor(bt.MockSubtensor):
     def __init__(self, netuid, n=16, wallet=None, network="mock"):
@@ -60,7 +61,7 @@ class MockDendrite(bt.dendrite):
             str: The string representation of the Dendrite object in the format "dendrite(<user_wallet_address>)".
         """
         return "MockDendrite({})".format(self.keypair.ss58_address)
-    
+
     async def forward(self):
-        #TODO: Implement this function
+        # TODO: Implement this function
         return None

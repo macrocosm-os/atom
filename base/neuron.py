@@ -24,6 +24,7 @@ from base.config import check_config, add_args, config
 
 from mock.mock import MockSubtensor, MockMetagraph
 
+
 class BaseNeuron(ABC):
     """
     Base class for Bittensor miners. This class is abstract and should be inherited by a subclass. It contains the core logic for all neurons; validators and miners.
@@ -51,7 +52,6 @@ class BaseNeuron(ABC):
     @abstractmethod
     def spec_version(self):
         ...
-
 
     @property
     def block(self):

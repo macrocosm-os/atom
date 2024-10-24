@@ -31,6 +31,7 @@ from base.neuron import BaseNeuron
 from base.config import add_validator_args
 from mock.mock import MockDendrite
 
+
 class BaseValidatorNeuron(BaseNeuron):
     """
     Base class for Bittensor validators. Your validator should inherit from this class.
@@ -137,7 +138,6 @@ class BaseValidatorNeuron(BaseNeuron):
         # This loop maintains the validator's operations until intentionally stopped.
         try:
             while True:
-
                 #### TO IMPLEMENT: Forward function ####
 
                 # Check if we should exit.

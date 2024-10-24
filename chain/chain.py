@@ -1,12 +1,13 @@
 import functools
-from typing import Optional 
+from typing import Optional
 
 from utils.generic import run_in_subprocess
 
-import bittensor as bt 
+import bittensor as bt
 from bittensor.extrinsics.serving import publish_metadata
 
-class ChainPreferenceStore():
+
+class ChainPreferenceStore:
     """Chain based implementation for storing and retrieving information on chain."""
 
     def __init__(
@@ -18,7 +19,7 @@ class ChainPreferenceStore():
     ):
         self.wallet = wallet
         self.netuid = netuid
-        self.subtensor = bt.subtensor(network = chain)
+        self.subtensor = bt.subtensor(network=chain)
 
     async def store_preferences(
         self,
@@ -39,7 +40,7 @@ class ChainPreferenceStore():
             self.wallet,
             self.netuid,
             f"Raw{len(data)}",
-            data.encode(), 
+            data.encode(),
             wait_for_inclusion,
             wait_for_finalization,
         )

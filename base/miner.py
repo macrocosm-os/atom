@@ -25,6 +25,7 @@ import bittensor as bt
 from base.neuron import BaseNeuron
 from base.config import add_miner_args
 
+
 class BaseMinerNeuron(BaseNeuron):
     """
     Base class for Bittensor miners.
