@@ -1,0 +1,64 @@
+import functools
+from typing import Optional 
+
+import bittensor as bt 
+from bittensor.extrinsics.serving import get_metadata
+class ChainPreferenceStore():
+    """Chain based implementation for storing and retrieving information on chain."""
+
+    def __init__(
+        self,
+        netuid: int,
+        chain: str = "finney",
+        # Wallet is only needed to write to the chain, not to read.
+        wallet: Optional[bt.wallet] = None,
+    ):
+        self.wallet = wallet
+        self.netuid = netuid
+        self.subtensor = bt.subtensor(network = chain)
+
+    async def store_preferences(
+        self,
+        data: str,
+        wait_for_inclusion: bool = True,
+        wait_for_finalization: bool = True,
+    ):
+        """Stores preferences on this subnet for a specific wallet."""
+        if self.wallet is None:
+            raise ValueError("No wallet available to write to the chain.")
+        if not data:
+            raise ValueError("No data provided to store on the chain.")
+
+        # Wrap calls to the subtensor in a subprocess with a timeout to handle potential hangs.
+        partial = functools.partial(
+            self.subtensor.commit,
+            self.subtensor,
+            self.wallet,
+            self.netuid,
+            f"Raw{len(data)}",
+            data.encode(), 
+            wait_for_inclusion,
+            wait_for_finalization,
+        )
+        bt.logging.info("Writing to chain...")
+        run_in_subprocess(partial, 60)
+
+    async def retrieve_preferences(self, hotkey: str) -> str:
+        """Retrieves latest github commit hash on this subnet for specific hotkey"""
+
+        # Wrap calls to the subtensor in a subprocess with a timeout to handle potential hangs.
+        partial = functools.partial(
+            bt.extrinsics.serving.get_metadata, self.subtensor, self.netuid, hotkey
+        )
+
+        metadata = run_in_subprocess(partial, 60)
+
+        if not metadata:
+            return None
+
+        commitment = metadata["info"]["fields"][0]
+        hex_data = commitment[list(commitment.keys())[0]][2:]
+
+        chain_str = bytes.fromhex(hex_data).decode()
+
+        return chain_str
