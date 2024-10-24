@@ -1,8 +1,11 @@
 import functools
 from typing import Optional 
 
+from utils.generic import run_in_subprocess
+
 import bittensor as bt 
-from bittensor.extrinsics.serving import get_metadata
+from bittensor.extrinsics.serving import publish_metadata
+
 class ChainPreferenceStore():
     """Chain based implementation for storing and retrieving information on chain."""
 
@@ -31,7 +34,7 @@ class ChainPreferenceStore():
 
         # Wrap calls to the subtensor in a subprocess with a timeout to handle potential hangs.
         partial = functools.partial(
-            self.subtensor.commit,
+            publish_metadata,
             self.subtensor,
             self.wallet,
             self.netuid,
@@ -40,6 +43,7 @@ class ChainPreferenceStore():
             wait_for_inclusion,
             wait_for_finalization,
         )
+
         bt.logging.info("Writing to chain...")
         run_in_subprocess(partial, 60)
 

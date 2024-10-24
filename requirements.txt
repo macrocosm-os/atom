@@ -1,0 +1,2 @@
+bittensor==6.9.4
+pydantic==1.10.0
