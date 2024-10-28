@@ -24,13 +24,13 @@ class ChainPreferenceStore:
         self.netuid = netuid
         self.subtensor = bt.subtensor(network=chain)
 
-    async def store_preferences(
+    async def write(
         self,
         data: str,
         wait_for_inclusion: bool = True,
         wait_for_finalization: bool = True,
     ):
-        """Stores preferences on this subnet for a specific wallet."""
+        """write to the subnet chain for a specific wallet."""
         if self.wallet is None:
             raise ValueError("No wallet available to write to the chain.")
         if not data:
@@ -51,8 +51,8 @@ class ChainPreferenceStore:
         bt.logging.info("Writing to chain...")
         run_in_subprocess(partial, 60)
 
-    async def retrieve_preferences(self, hotkey: str) -> str:
-        """Retrieves latest github commit hash on this subnet for specific hotkey"""
+    async def read(self, hotkey: str) -> str:
+        """Reads the most recent data from the chain from the specified hotkey."""
 
         # Wrap calls to the subtensor in a subprocess with a timeout to handle potential hangs.
         partial = functools.partial(
