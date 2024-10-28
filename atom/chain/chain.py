@@ -17,7 +17,10 @@ class ChainPreferenceStore:
         # Wallet is only needed to write to the chain, not to read.
         wallet: Optional[bt.wallet] = None,
     ):
+        if wallet is None:
+            bt.logging.warning("No wallet provided. You will not be able to write to the chain.")
         self.wallet = wallet
+
         self.netuid = netuid
         self.subtensor = bt.subtensor(network=chain)
 
