@@ -7,7 +7,7 @@ import bittensor as bt
 from bittensor.extrinsics.serving import publish_metadata
 
 
-class ChainPreferenceStore:
+class ChainStore:
     """Chain based implementation for storing and retrieving information on chain."""
 
     def __init__(

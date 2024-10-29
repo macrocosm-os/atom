@@ -3,7 +3,7 @@ import shutil
 import subprocess
 
 import bittensor as bt
-from typing import Any, Dict, Optional, Callable
+from typing import Callable
 
 from atom.utils import run_command, json_reader
 from abc import ABC, abstractmethod
