@@ -95,9 +95,21 @@ class GithubHandler(BaseHandler):
         content: str,
         folder_name: str,
         file_ext: str,
-        branch_name: str,
         hotkey: str,
+        branch_name: str = 'main'
     ) -> str:
+        """ Put content into the repository.
+
+        Args:
+            content (str): The content to be written into the file.
+            folder_name (str): Relative or absolute name of the folder to write the file into.
+            file_ext (str): The datatype of the saved file. E.g. "json"
+            hotkey (str): Validator hotkey.
+            branch_name (str): The branch to commit the changes to. E.g. "main"
+
+        Returns:
+            str: _description_
+        """
 
         self.clone()
 
