@@ -22,7 +22,7 @@ from abc import ABC, abstractmethod, property
 from base.ttl import ttl_get_block
 from base.config import check_config, add_args, config
 
-from mock.mock import MockSubtensor, MockMetagraph
+from atom.mock.mock import MockSubtensor, MockMetagraph
 
 
 class BaseNeuron(ABC):

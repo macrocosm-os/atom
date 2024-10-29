@@ -29,7 +29,7 @@ from traceback import print_exception
 
 from base.neuron import BaseNeuron
 from base.config import add_validator_args
-from mock.mock import MockDendrite
+from atom.mock.mock import MockDendrite
 
 
 class BaseValidatorNeuron(BaseNeuron):
@@ -78,8 +78,6 @@ class BaseValidatorNeuron(BaseNeuron):
         self.is_running: bool = False
         self.thread: threading.Thread = None
         self.lock = asyncio.Lock()
-
-        self.load_and_merge_configs()
 
     def serve_axon(self):
         """Serve axon to enable external connections."""
