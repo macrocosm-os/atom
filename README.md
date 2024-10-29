@@ -1,7 +1,16 @@
-# Atom
-`Atom` is the foundation upon which we will build the future.
+<picture>
+    <source srcset="./assets/macrocosmos-white.png"  media="(prefers-color-scheme: dark)">
+    <source srcset="./assets/macrocosmos-black.png"  media="(prefers-color-scheme: light)">
+    <img src="macrocosmos-black.png">
+</picture>
 
-Just as the atom forms the basis of all matter, this repository will serve as the core structure for every project that follows. Scalable, efficient, and adaptable, `Atom` provides a framework that enables rapid development while ensuring stability and clarity for bittensor subnetworks.
+<div align="center">
+
+# **Atom** <!-- omit in toc -->
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
+</div>
+
+Just as the atom forms the basis of all matter, this repository will serve as the core structure for every project that follows. Scalable, efficient, and adaptable, `atom` provides a framework that enables rapid development while ensuring stability and clarity for bittensor subnetworks. 
 
 The current vision of this sdk is to provide us with a backbone that all of us can benefit from, such as:
 1. Generic miner backbone 
