@@ -157,3 +157,4 @@ cython_debug/
 
 # Additional 
 .DS_Store 
+*.ipynb

@@ -18,7 +18,9 @@ class ChainPreferenceStore:
         wallet: Optional[bt.wallet] = None,
     ):
         if wallet is None:
-            bt.logging.warning("No wallet provided. You will not be able to write to the chain.")
+            bt.logging.warning(
+                "No wallet provided. You will not be able to write to the chain."
+            )
         self.wallet = wallet
 
         self.netuid = netuid
