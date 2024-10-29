@@ -47,10 +47,17 @@ class GithubHandler(BaseHandler):
             bt.logging.error(f"An error occurred during Git operations: {e}")
             return None
 
-    def get(
-        self, commit_sha: str, filepath: str, reader: Callable = json_reader
-    ) -> Optional[Dict[str, Any]]:
-        """Retrieve content from a specific commit in the repository."""
+    def get(self, commit_sha: str, filepath: str, reader: Callable = json_reader):
+        """Get content from a specific commit in the repository.
+
+        Args:
+            commit_sha (str): The commit hash to checkout.
+            filepath (str): The path to the file to read. Usually identified through the hotkey, f"{hotkey}.json"
+            reader (Callable, optional): Function that reads the datatype specified. Defaults to json_reader.
+
+        Returns:
+            content: The content of the file in the specified commit.
+        """
 
         try:
             # Clone and fetch all changes from the repo.
@@ -107,9 +114,10 @@ class GithubHandler(BaseHandler):
             os.mkdir(os.path.join(self.repo_path, folder_name))
 
         filename = os.path.join(folder_name, f"{hotkey}.{file_ext}")
+        
         bt.logging.info(f"Creating file: {filename}")
         with open(filename, "w") as f:
-            f.write(filename)
+            f.write(content)
 
         bt.logging.info("Staging, committing, and pushing changes")
 
