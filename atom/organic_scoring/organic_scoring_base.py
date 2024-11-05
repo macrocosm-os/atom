@@ -166,8 +166,6 @@ class OrganicScoringBase(ABC):
             return None 
         
         return sample 
-        
-
 
     async def wait_until_next(self, timer_elapsed: float = 0):
         """Wait until next iteration dynamically based on the size of the organic queue and the elapsed time.
