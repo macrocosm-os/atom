@@ -6,6 +6,7 @@ from organic_scoring.organic_queue.organic_queue_base import OrganicQueueBase
 
 class OrganicQueue(OrganicQueueBase):
     """Basic organic queue, implemented as a list."""
+
     def __init__(self, max_size: int = 10000):
         self._queue = []
         self.max_size = max_size

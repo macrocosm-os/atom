@@ -72,7 +72,9 @@ class OrganicScoringBase(ABC):
         self._trigger = trigger
         self._trigger_min = trigger_frequency_min
         self._trigger_scaling_factor = trigger_scaling_factor
-        assert self._trigger_scaling_factor > 0, "The scaling factor must be higher than 0."
+        assert (
+            self._trigger_scaling_factor > 0
+        ), "The scaling factor must be higher than 0."
         self._organic_queue = organic_queue
         if self._organic_queue is None:
             self._organic_queue = OrganicQueue()
@@ -83,7 +85,9 @@ class OrganicScoringBase(ABC):
         # If the methods are not overridden in the derived class, None is passed.
         self._axon.attach(
             forward_fn=self._on_organic_entry,
-            blacklist_fn=self._blacklist_fn if is_overridden(self._blacklist_fn) else None,
+            blacklist_fn=(
+                self._blacklist_fn if is_overridden(self._blacklist_fn) else None
+            ),
             priority_fn=self._priority_fn if is_overridden(self._priority_fn) else None,
             verify_fn=self._verify_fn if is_overridden(self._verify_fn) else None,
         )
@@ -131,7 +135,9 @@ class OrganicScoringBase(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def _generate_rewards(self, sample: Any, responses: Sequence[Any], reference: Any = None) -> dict[str, Any]:
+    async def _generate_rewards(
+        self, sample: Any, responses: Sequence[Any], reference: Any = None
+    ) -> dict[str, Any]:
         """Generate rewards based on the sample and responses.
 
         Args:
@@ -216,9 +222,13 @@ class OrganicScoringBase(ABC):
 
             try:
                 logs = await self.loop_iteration()
-                await self.wait_until_next(timer_elapsed=logs.get("organic_time_total", 0))
+                await self.wait_until_next(
+                    timer_elapsed=logs.get("organic_time_total", 0)
+                )
             except Exception as e:
-                bt.logging.error(f"Error occured during organic scoring iteration:\n{e}")
+                bt.logging.error(
+                    f"Error occured during organic scoring iteration:\n{e}"
+                )
                 await asyncio.sleep(1)
 
     async def loop_iteration(self) -> dict[str, Any]:
@@ -271,7 +281,7 @@ class OrganicScoringBase(ABC):
             reference=reference,
             responses=responses,
             rewards=rewards,
-            sample=sample
+            sample=sample,
         )
 
     async def wait_until_next(self, timer_elapsed: float = 0):
@@ -281,19 +291,19 @@ class OrganicScoringBase(ABC):
         ensuring the system can keep up with the data processing demands.
 
         Args:
-            timer_elapsed: The time elapsed during the current iteration of the processing loop. This is used 
+            timer_elapsed: The time elapsed during the current iteration of the processing loop. This is used
                 to calculate the remaining sleep duration when the trigger is based on seconds.
 
         Behavior:
-            - If the trigger is set to "seconds", the method calculates a dynamic frequency based on the current queue 
+            - If the trigger is set to "seconds", the method calculates a dynamic frequency based on the current queue
             size and the scaling factor, then sleeps for the remaining duration after considering the elapsed time.
-            - If the trigger is set to "steps", the method adjusts the step counter dynamically based on the current 
+            - If the trigger is set to "steps", the method adjusts the step counter dynamically based on the current
             queue size and the scaling factor, ensuring that the system can keep up with the processing demands.
-        
+
         Dynamic Adjustment:
-            - The `dynamic_frequency` is calculated by reducing the original frequency by a value proportional to the 
+            - The `dynamic_frequency` is calculated by reducing the original frequency by a value proportional to the
             queue size divided by the scaling factor. It ensures the frequency does not drop below `min_seconds`.
-            - The `dynamic_steps` is calculated similarly, reducing the original step count by a value proportional 
+            - The `dynamic_steps` is calculated similarly, reducing the original step count by a value proportional
             to the queue size divided by the scaling factor. It ensures the steps do not drop below `min_steps`.
         """
         # Annealing sampling rate logic.
@@ -313,5 +323,8 @@ class OrganicScoringBase(ABC):
     def sample_rate_dynamic(self) -> float:
         """Returns dynamic sampling rate based on the size of the organic queue."""
         size = self._organic_queue.size
-        delay = max(self._trigger_frequency - (size / self._trigger_scaling_factor), self._trigger_min)
+        delay = max(
+            self._trigger_frequency - (size / self._trigger_scaling_factor),
+            self._trigger_min,
+        )
         return delay if self._trigger == "seconds" else int(delay)

@@ -96,9 +96,9 @@ class GithubHandler(BaseHandler):
         folder_name: str,
         file_ext: str,
         hotkey: str,
-        branch_name: str = 'main'
+        branch_name: str = "main",
     ) -> str:
-        """ Put content into the repository.
+        """Put content into the repository.
 
         Args:
             content (str): The content to be written into the file.
@@ -126,7 +126,7 @@ class GithubHandler(BaseHandler):
             os.mkdir(os.path.join(self.repo_path, folder_name))
 
         filename = os.path.join(folder_name, f"{hotkey}.{file_ext}")
-        
+
         bt.logging.info(f"Creating file: {filename}")
         with open(filename, "w") as f:
             f.write(content)

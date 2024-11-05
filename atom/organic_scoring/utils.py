@@ -10,7 +10,7 @@ def is_overridden(method) -> bool:
     child_instance = method.__self__
     method_name = method.__name__
     child_class = child_instance.__class__
-    
+
     # Find the base class that defines the method.
     for base_class in child_class.__bases__:
         if hasattr(base_class, method_name):

@@ -43,16 +43,26 @@ class SynthDatasetConversation(SynthDatasetBase):
             messages = messages[:-1]
 
         # Augment the messages by modifying words and introducing errors.
-        messages = [self._augment_message(role, message) for role, message in zip(roles, messages)]
+        messages = [
+            self._augment_message(role, message)
+            for role, message in zip(roles, messages)
+        ]
 
-        return {"roles": roles, "messages": messages, "organic": False, "source": self._url}
+        return {
+            "roles": roles,
+            "messages": messages,
+            "organic": False,
+            "source": self._url,
+        }
 
     def _augment_message(self, role: str, message: str) -> str:
         if role == "assistant":
             return message
 
         words = message.split()
-        num_words_to_modify = random.randint(1, max(1, int(len(words) * self._chance_word_synonym)))
+        num_words_to_modify = random.randint(
+            1, max(1, int(len(words) * self._chance_word_synonym))
+        )
         words_to_modify = random.sample(range(len(words)), num_words_to_modify)
 
         for idx in words_to_modify:
@@ -68,14 +78,18 @@ class SynthDatasetConversation(SynthDatasetBase):
         synonyms = wordnet.synsets(word)
         if synonyms:
             # Choose a synonym that is not the word itself.
-            synonym_words = [lemma.name() for lemma in synonyms[0].lemmas() if lemma.name() != word]
+            synonym_words = [
+                lemma.name() for lemma in synonyms[0].lemmas() if lemma.name() != word
+            ]
             if synonym_words:
                 return random.choice(synonym_words)
         return word
 
     def _introduce_typos(self, message: str) -> str:
         message = list(message)
-        num_errors = random.randint(0, max(1, int(len(message) * self._chance_char_typo)))
+        num_errors = random.randint(
+            0, max(1, int(len(message) * self._chance_char_typo))
+        )
         for _ in range(num_errors):
             error_type = random.choice(["remove", "add_space"])
             error_position = random.randint(0, len(message) - 1)

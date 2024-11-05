@@ -4,7 +4,7 @@ from typing import Any
 
 class OrganicQueueBase(ABC):
     """Base organic queue.
-    
+
     The following methods must be implemented:
         - add: Add the sample to the queue;
         - sample: Pop the sample from the queue;
