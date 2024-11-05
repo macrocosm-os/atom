@@ -124,9 +124,3 @@ def run_command(command: List[str], cwd: str = None) -> str:
         bt.logging.error(f"Error executing command: {' '.join(command)}")
         bt.logging.error(f"Error message: {e.stderr.strip()}")
         raise
-
-
-def json_reader(filepath: str):
-    with open(filepath, "r") as file:
-        content = json.load(file)
-    return content
