@@ -27,7 +27,7 @@ def check_uid_availability(
     if not metagraph.axons[uid].is_serving:
         return False
 
-    # Filter validator permit > 1024 stake.
+    # Filter validator permit > vpermit_tao_limit stake.
     if metagraph.validator_permit[uid] and metagraph.S[uid] > vpermit_tao_limit:
         return False
 
