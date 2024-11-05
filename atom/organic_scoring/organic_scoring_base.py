@@ -128,85 +128,6 @@ class OrganicScoringBase(ABC):
         """
         raise NotImplementedError
 
-    @abstractmethod
-    async def _query_miners(self, sample: Any) -> dict[str, Any]:
-        """Query the miners with a sample
-
-        Args:
-            sample: The sample to query with.
-
-        Returns:
-            dict[str, Any]: The responses from the miners.
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    async def _generate_rewards(
-        self, sample: Any, responses: Sequence[Any], reference: Any = None
-    ) -> dict[str, Any]:
-        """Generate rewards based on the sample and responses.
-
-        Args:
-            sample: The sample to use.
-            responses: The responses from the miners.
-            reference: The reference data. Defaults to None.
-
-        Returns:
-            dict[str, Any]: The generated rewards information.
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    async def _set_weights(self, rewards: dict[str, Any]):
-        """Set the weights for the miners.
-
-        Args:
-            rewards: Dict with rewards and any additional info.
-        """
-        raise NotImplementedError
-
-    async def _generate_reference(self, sample: Any) -> Optional[Any]:
-        """Generate a reference based on the sample.
-
-        Args:
-            sample: The sample used to generate the reference.
-
-        Returns:
-            Optional[Any]: The generated reference, if any.
-        """
-        return None
-
-    async def _log_results(
-        self,
-        logs: dict[str, Any],
-        reference: Any,
-        responses: dict[str, Any],
-        rewards: dict[str, Any],
-        sample: Any,
-        *args,
-        **kwargs,
-    ) -> dict[str, Any]:
-        """Log the results of the organic scoring iteration.
-
-        Args:
-            logs: The logs to record. Default values in the dict:
-                - "organic_time_sample": Time taken in seconds to sample the organic queue or synthetic dataset;
-                - "organic_time_responses": Time taken in seconds to query the miners and generate reference;
-                - "organic_time_rewards": Time taken in seconds to generate rewards;
-                - "organic_time_weights": Time taken in seconds to set the weights;
-                - "organic_time_total": Total time taken in seconds for the iteration;
-                - "organic_queue_len": Current length of the organic queue;
-                - "is_organic_sample": If the sample is from the organic queue.
-            reference: The reference data.
-            responses: The responses from the miners.
-            rewards: The generated rewards.
-            sample: The sample used.
-
-        Returns:
-            dict[str, Any]: The logs recorded.
-        """
-        return logs
-
     async def _priority_fn(self, synapse: bt.Synapse) -> float:
         """Priority function to sort the organic queue."""
         return 0.0
@@ -227,68 +148,17 @@ class OrganicScoringBase(ABC):
                     await asyncio.sleep(0.1)
 
             try:
-                logs = await self.loop_iteration()
-                await self.wait_until_next(
-                    timer_elapsed=logs.get("organic_time_total", 0)
-                )
+                await self.loop_iteration()
             except Exception as e:
                 bt.logging.error(
                     f"Error occured during organic scoring iteration:\n{e}"
                 )
                 await asyncio.sleep(1)
 
+    @abstractmethod
     async def loop_iteration(self) -> dict[str, Any]:
-        timer_total = time.perf_counter()
-
-        timer_sample = time.perf_counter()
-        is_organic_sample = False
-        if not self._organic_queue.is_empty():
-            # Choose organic sample based on the organic queue logic.
-            sample = self._organic_queue.sample()
-            is_organic_sample = True
-        elif self._synth_dataset is not None:
-            # Choose if organic queue is empty, choose random sample from provided datasets.
-            sample = random.choice(self._synth_dataset).sample()
-        else:
-            return {}
-
-        timer_sample_elapsed = time.perf_counter() - timer_sample
-
-        # Concurrently generate reference and query miners.
-        timer_responses = time.perf_counter()
-        reference_task = asyncio.create_task(self._generate_reference(sample))
-        responses_task = asyncio.create_task(self._query_miners(sample))
-        reference, responses = await asyncio.gather(reference_task, responses_task)
-        timer_responses_elapsed = time.perf_counter() - timer_responses
-
-        # Generate rewards.
-        timer_rewards = time.perf_counter()
-        rewards = await self._generate_rewards(sample, responses, reference)
-        timer_rewards_elapsed = time.perf_counter() - timer_rewards
-
-        # Set weights based on the generated rewards.
-        timer_weights = time.perf_counter()
-        await self._set_weights(rewards)
-        timer_weights_elapsed = time.perf_counter() - timer_weights
-
-        # Log the metrics.
-        timer_elapsed = time.perf_counter() - timer_total
-        logs = {
-            "organic_time_sample": timer_sample_elapsed,
-            "organic_time_responses": timer_responses_elapsed,
-            "organic_time_rewards": timer_rewards_elapsed,
-            "organic_time_weights": timer_weights_elapsed,
-            "organic_time_total": timer_elapsed,
-            "organic_queue_size": self._organic_queue.size,
-            "is_organic_sample": is_organic_sample,
-        }
-        return await self._log_results(
-            logs=logs,
-            reference=reference,
-            responses=responses,
-            rewards=rewards,
-            sample=sample,
-        )
+        # Need to have self._organic_queue.sample() to be able to run the loop.
+        pass
 
     async def wait_until_next(self, timer_elapsed: float = 0):
         """Wait until next iteration dynamically based on the size of the organic queue and the elapsed time.
