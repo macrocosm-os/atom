@@ -1,3 +1,4 @@
+import random
 import asyncio
 from abc import ABC, abstractmethod
 from typing import Any, Literal, Optional, Sequence, Union, Tuple
@@ -146,17 +147,27 @@ class OrganicScoringBase(ABC):
                     await asyncio.sleep(0.1)
 
             try:
-                await self.loop_iteration()
+                await self.sample()
             except Exception as e:
                 bt.logging.error(
                     f"Error occured during organic scoring iteration:\n{e}"
                 )
                 await asyncio.sleep(1)
 
-    @abstractmethod
-    async def loop_iteration(self) -> dict[str, Any]:
-        # Need to have self._organic_queue.sample() to be able to run the loop.
-        pass
+    async def sample(self) -> Any:
+        """Sample data from the organic queue or the synthetic dataset (if available)."""
+        if not self._organic_queue.is_empty():
+            # Choose organic sample based on the organic queue logic.
+            sample = self._organic_queue.sample()
+        elif self._synth_dataset is not None:
+            # Choose if organic queue is empty, choose random sample from provided datasets.
+            sample = random.choice(self._synth_dataset).sample()
+        else:
+            return None 
+        
+        return sample 
+        
+
 
     async def wait_until_next(self, timer_elapsed: float = 0):
         """Wait until next iteration dynamically based on the size of the organic queue and the elapsed time.
