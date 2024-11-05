@@ -6,9 +6,9 @@ from typing import Any, Literal, Optional, Sequence, Union, Tuple
 
 import bittensor as bt
 
-from organic_scoring.organic_queue import OrganicQueue, OrganicQueueBase
-from organic_scoring.synth_dataset import SynthDatasetBase
-from organic_scoring.utils import is_overridden
+from atom.organic_scoring.organic_queue import OrganicQueue, OrganicQueueBase
+from atom.organic_scoring.synth_dataset import SynthDatasetBase
+from atom.organic_scoring.utils import is_overridden
 
 
 class OrganicScoringBase(ABC):
@@ -66,18 +66,24 @@ class OrganicScoringBase(ABC):
         self._should_exit = False
         self._is_running = False
         self._synth_dataset = synth_dataset
+
         if isinstance(self._synth_dataset, SynthDatasetBase):
             self._synth_dataset = (synth_dataset,)
+
         self._trigger_frequency = trigger_frequency
         self._trigger = trigger
         self._trigger_min = trigger_frequency_min
         self._trigger_scaling_factor = trigger_scaling_factor
+
         assert (
             self._trigger_scaling_factor > 0
         ), "The scaling factor must be higher than 0."
+
         self._organic_queue = organic_queue
+        
         if self._organic_queue is None:
             self._organic_queue = OrganicQueue()
+
         self._step_counter = 0
         self._step_lock = asyncio.Lock()
 

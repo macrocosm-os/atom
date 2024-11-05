@@ -1,7 +1,7 @@
 import random
 from typing import Any
 
-from organic_scoring.organic_queue.organic_queue_base import OrganicQueueBase
+from atom.organic_scoring.organic_queue.organic_queue_base import OrganicQueueBase
 
 
 class OrganicQueue(OrganicQueueBase):

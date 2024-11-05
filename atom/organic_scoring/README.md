@@ -12,7 +12,7 @@ steps must be incremented using the `increment_step` or `set_step` methods.
 
 ## Process Workflow
 1. **Trigger Check**: Upon triggering the rewarding process, the system checks if the organic queue is empty.
-If the queue is empty, synthetic datasets (defined in `organic_scoring/synth_dataset_base.py`) are used to bootstrap
+If the queue is empty, synthetic datasets (defined in `atom.organic_scoring.synth_dataset_base.py`) are used to bootstrap
 the organic scoring mechanism. Otherwise, samples from the organic queue are utilized.
 2. **Data Processing**: The sampled data is concurrently passed to the `_query_miners` and `_generate_reference`
 methods.
@@ -59,9 +59,9 @@ pip install git+https://github.com/macrocosm-os/organic-scoring.git@main
 - (Optional) `_verify_fn`: Function to verify requests for organic handles.
 
 ```python
-from organic_scoring import OrganicScoringBase
-from organic_scoring.organic_queue import OrganicQueueBase
-from organic_scoring.synth_dataset import SynthDatasetBase
+from atom.organic_scoring.import OrganicScoringBase
+from atom.organic_scoring.organic_queue import OrganicQueueBase
+from atom.organic_scoring.synth_dataset import SynthDatasetBase
 
 
 class YourOrganicScoring(OrganicScoringBase):
@@ -89,14 +89,14 @@ axon = bt.axon(wallet=self.wallet, config=self.config)
 axon.serve(netuid=self.config.netuid, subtensor=self.subtensor)
 axon.start()
 
-organic_scoring = YourOrganicScoring(
+atom.organic_scoring.= YourOrganicScoring(
     axon=axon,
     synth_dataset=YourSynthDataset(),
     organic_queue=YourOrganicQueue(),
     trigger_frequency=15,
     trigger="seconds",
 )
-organic_scoring.start()
+atom.organic_scoring.start()
 ```
 
 
