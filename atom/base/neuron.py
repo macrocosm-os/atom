@@ -16,8 +16,10 @@
 # DEALINGS IN THE SOFTWARE.
 
 import copy
-import bittensor as bt
+import threading
 from abc import ABC, abstractmethod, property
+
+import bittensor as bt
 
 from base.ttl import ttl_get_block
 from base.config import check_config, add_args, config
@@ -158,6 +160,43 @@ class BaseNeuron(ABC):
         return (
             self.block - self.metagraph.last_update[self.uid]
         ) > self.config.neuron.epoch_length
+
+    def run_in_background_thread(self):
+        """
+        Starts the operations in a separate background thread.
+        This is useful for non-blocking operations.
+        """
+        if not self.is_running:
+            bt.logging.debug("Starting in background thread.")
+            self.should_exit = False
+            self.thread = threading.Thread(target=self.run, daemon=True)
+            self.thread.start()
+            self.is_running = True
+            bt.logging.debug("Started")
+
+    def stop_run_thread(self):
+        """
+        Stops the operations that are running in the background thread.
+        """
+        if self.is_running:
+            bt.logging.debug("Stopping in background thread.")
+            self.should_exit = True
+            self.thread.join(5)
+            self.is_running = False
+            bt.logging.debug("Stopped")
+
+    def __enter__(self): 
+        # should call self.run_in_background_thread() or self.run() here
+        raise NotImplementedError
+    
+    async def __aenter__(self): 
+        raise NotImplementedError
+    
+    def __exit__(self, exc_type, exc_value, traceback): 
+        raise NotImplementedError
+    
+    async def __aexit__(self, exc_type, exc_value, traceback):
+        raise NotImplementedError
 
     def save_state(self):
         pass
