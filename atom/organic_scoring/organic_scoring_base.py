@@ -1,7 +1,6 @@
-import random
 import asyncio
 from abc import ABC, abstractmethod
-from typing import Any, Literal, Optional, Sequence, Union, Tuple
+from typing import Any, Literal, Optional, Sequence, Union, Tuple, Callable
 
 import bittensor as bt
 
@@ -41,14 +40,11 @@ class OrganicScoringBase(ABC):
                 in the organic queue size. This value must be greater than 0.
 
         Override the following methods:
+            - `forward`: Method to establish the sampling logic for the organic scoring task.
             - `_on_organic_entry`: Handle an organic entry, append required values to `_organic_queue`.
                 Important: this method must add the required values to the `_organic_queue`.
             - `_query_miners`: Query the miners with a given organic sample.
-            - `_generate_rewards`: Concurrently generate rewards based on the sample and responses.
             - `_set_weights`: Set the weights based on generated rewards for the miners.
-            - (Optional) `_generate_reference`: Generate a reference based on the sample, if required.
-                Used in `_generate_rewards`.
-            - (Optional) `_log_results`: Log the results.
             - (Optional) `_priority_fn`: Function with priority value for organic handles.
             - (Optional) `_blacklist_fn`: Function with blacklist for organic handles.
             - (Optional) `_verify_fn`: Function to verify requests for organic handles.
@@ -140,32 +136,36 @@ class OrganicScoringBase(ABC):
         return True
 
     async def start_loop(self):
-        """The main loop for running the organic scoring task, either based on a time interval or steps."""
+        """The main loop for running the organic scoring task, either based on a time interval or steps.
+        Calls the `sample` method to establish the sampling logic for the organic scoring task.
+        """
         while not self._should_exit:
             if self._trigger == "steps":
                 while self._step_counter < self._trigger_frequency:
                     await asyncio.sleep(0.1)
 
             try:
-                await self.sample()
+                logs = await self.forward()
+
+                total_elapsed_time = logs.get(["total_elapsed_time"], 0)
+                await self.wait_until_next(timer_elapsed=total_elapsed_time)
+
             except Exception as e:
                 bt.logging.error(
                     f"Error occured during organic scoring iteration:\n{e}"
                 )
                 await asyncio.sleep(1)
 
-    async def sample(self) -> Any:
-        """Sample data from the organic queue or the synthetic dataset (if available)."""
-        if not self._organic_queue.is_empty():
-            # Choose organic sample based on the organic queue logic.
-            sample = self._organic_queue.sample()
-        elif self._synth_dataset is not None:
-            # Choose if organic queue is empty, choose random sample from provided datasets.
-            sample = random.choice(self._synth_dataset).sample()
-        else:
-            return None 
+    @abstractmethod
+    async def forward(self) -> dict[str, Any]: 
+        """
+        Method to establish the sampling logic for the organic scoring task.
+        Sample data from the organic queue or the synthetic dataset (if available).
         
-        return sample 
+        Expected to return a dictionary with information from the sampling method.
+        If the trigger is based on seconds, the dictionary should contain the key "total_elapsed_time".
+        """
+        ...
 
     async def wait_until_next(self, timer_elapsed: float = 0):
         """Wait until next iteration dynamically based on the size of the organic queue and the elapsed time.
