@@ -147,7 +147,7 @@ class OrganicScoringBase(ABC):
             try:
                 logs = await self.forward()
 
-                total_elapsed_time = logs.get(["total_elapsed_time"], 0)
+                total_elapsed_time = logs.get("total_elapsed_time", 0)
                 await self.wait_until_next(timer_elapsed=total_elapsed_time)
 
             except Exception as e:
