@@ -93,6 +93,26 @@ class Validator(BaseValidatorNeuron):
         self.axon.serve(netuid=self.config.netuid, subtensor=self.subtensor).start()
 ```
 
+We create a background task that runs the organic scoring `start_loop()` method, which will consistently run the class' `forward` function at the desired trigger frequency. And example `forward` could look like the following: 
+
+```python
+async def forward(self) -> dict[str, Any]:
+    """The forward method is responsible for sampling data from the organic queue,
+    and adding it to the local database of the validator.
+    """
+    init_time = time.perf_counter()
+    sample: dict[str, Any] = await self._organic_queue.sample()
+
+    if sample is not None:
+        # Add jobs to the sqlite database for the vali to process.
+        await self._validator.send_query_to_network(query=sample)
+
+    return {
+        "total_elapsed_time" : time.time() - init_time
+    }
+
+```
+
 ## Setup
 
 Add to requirements to your project:
