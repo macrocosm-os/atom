@@ -112,25 +112,3 @@ async def forward(self) -> dict[str, Any]:
     }
 
 ```
-
-## Setup
-
-Add to requirements to your project:
-```shell
-git+https://github.com/macrocosm-os/organic-scoring.git@main
-```
-
-Or install manually by:
-```shell
-pip install git+https://github.com/macrocosm-os/organic-scoring.git@main
-```
-
-## Implementation
-
-### Example Usage
-1. Create a subclass of OrganicScoringBase.
-2. Implement the required methods.
-3. Create an instance of the subclass.
-4. Call the `start` method to start the organic scoring task.
-5. Call the `stop` method to stop the organic scoring task.
-6. Call the `increment_step` method to increment the step counter if the trigger is set to "steps".
