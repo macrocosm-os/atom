@@ -60,7 +60,7 @@ class OrganicValidator(OrganicScoringBase):
     def forward(): ... 
 
 class Validator(BaseValidatorNeuron):
-    """ Example implementatino of a Validator constructor """
+    """ Example implementation of a Validator constructor """
 
     def __init__(self, ... ):
         
