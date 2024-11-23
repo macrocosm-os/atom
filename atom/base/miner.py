@@ -21,9 +21,12 @@ import threading
 import argparse
 import traceback
 
+from typing import Tuple
+from abc import abstractmethod
+
 import bittensor as bt
-from base.neuron import BaseNeuron
-from base.config import add_miner_args
+from atom.base.neuron import BaseNeuron
+from atom.base.config import add_miner_args
 
 
 class BaseMinerNeuron(BaseNeuron):
@@ -40,11 +43,11 @@ class BaseMinerNeuron(BaseNeuron):
         super().__init__(config=config)
 
         # Warn if allowing incoming requests from anyone.
-        if not self.config.blacklist.force_validator_permit:
+        if not self.config.get("blacklist.force_validator_permit"):
             bt.logging.warning(
                 "You are allowing non-validators to send requests to your miner. This is a security risk."
             )
-        if self.config.blacklist.allow_non_registered:
+        if self.config.get("blacklist.allow_non_registered"):
             bt.logging.warning(
                 "You are allowing non-registered entities to send requests to your miner. This is a security risk."
             )
@@ -154,3 +157,29 @@ class BaseMinerNeuron(BaseNeuron):
 
     def set_weights(self):
         pass
+
+    @abstractmethod
+    def blacklist(self, synapse: bt.Synapse) -> Tuple[bool, str]:
+        """
+        Blacklist function for miner handles.
+
+        Args:
+            synapse: The synapse to handle.
+
+        Returns:
+            bool: Whether to blacklist the synapse or not.
+        """
+        ... 
+
+    @abstractmethod
+    def priority(self, synapse: bt.Synapse) -> float:
+        """
+        Priority function for miner handles.
+
+        Args:
+            synapse: The synapse to handle.
+
+        Returns:
+            float: The priority of the synapse.
+        """
+        ...

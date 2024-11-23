@@ -17,14 +17,14 @@
 
 import copy
 import threading
-from abc import ABC, abstractmethod, property
+from abc import ABC, abstractmethod
 
 import bittensor as bt
 
-from base.ttl import ttl_get_block
-from base.config import check_config, add_args, config
+from atom.base.ttl import ttl_get_block
+from atom.base.config import check_config, add_args, config
 
-from atom.mock.mock import MockSubtensor, MockMetagraph
+from atom.mock.mock import MockSubtensor, MockMetagraph, create_wallet
 
 
 class BaseNeuron(ABC):
@@ -80,13 +80,19 @@ class BaseNeuron(ABC):
 
         # The wallet holds the cryptographic key pairs for the miner.
         if self.config.mock:
-            self.wallet = bt.MockWallet(config=self.config)
+            self.wallet = create_wallet()
             self.subtensor = MockSubtensor(self.config.netuid, wallet=self.wallet)
             self.metagraph = MockMetagraph(self.config.netuid, subtensor=self.subtensor)
         else:
             self.wallet = bt.wallet(config=self.config)
             self.subtensor = bt.subtensor(config=self.config)
             self.metagraph = self.subtensor.metagraph(self.config.netuid)
+
+            # Each key has a unique identity (UID) in the network for differentiation.
+            self.uid = self.metagraph.hotkeys.index(self.wallet.hotkey.ss58_address)
+            bt.logging.info(
+                f"Running neuron on subnet: {self.config.netuid} with uid {self.uid} using network: {self.subtensor.chain_endpoint}"
+            )
 
         bt.logging.info(f"Wallet: {self.wallet}")
         bt.logging.info(f"Subtensor: {self.subtensor}")
@@ -95,11 +101,6 @@ class BaseNeuron(ABC):
         # Check if the miner is registered on the Bittensor network before proceeding further.
         self.check_registered()
 
-        # Each miner gets a unique identity (UID) in the network for differentiation.
-        self.uid = self.metagraph.hotkeys.index(self.wallet.hotkey.ss58_address)
-        bt.logging.info(
-            f"Running neuron on subnet: {self.config.netuid} with uid {self.uid} using network: {self.subtensor.chain_endpoint}"
-        )
         self.step = 0
 
     @abstractmethod
@@ -128,6 +129,9 @@ class BaseNeuron(ABC):
 
     def check_registered(self):
         # --- Check for registration.
+        if self.config.mock:
+            return
+        
         if not self.subtensor.is_hotkey_registered(
             netuid=self.config.netuid,
             hotkey_ss58=self.wallet.hotkey.ss58_address,
