@@ -1,9 +1,11 @@
 import torch
-import bittensor as bt 
+import bittensor as bt
 from typing import List
 
-class ValidatorWeightSettingMixin():
-    """ Class to handle the functional separation of setting weights for the validator. """
+
+class ValidatorWeightSettingMixin:
+    """Class to handle the functional separation of setting weights for the validator."""
+
     def set_weights(self):
         """
         Sets the validator weights to the metagraph hotkeys based on the scores it has received from the miners. The weights determine the trust and incentive level the validator assigns to miner nodes on the network.

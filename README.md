@@ -20,7 +20,7 @@ The current vision of this sdk is to provide us with a backbone that all of us c
 1. Generic miner backbone 
 2. Generic validator backbone 
 3. Chain-related tools (writing, reading)
-4. ect... 
+4. Organic Scoring tools
 
 ## Working with Atom
 If you want to use it for your subnet development, you can install using: 
@@ -34,3 +34,12 @@ git clone ...
 pip install -e PATH_TO_ATOM
 ```
 The -e allows you to be in "edit" mode. 
+
+## Poetry Installation
+We use poetry to handle dependancies that are within `atom`. 
+
+### MacOS 
+```bash 
+brew install python@3.11
+bash install.sh
+```

@@ -24,11 +24,8 @@ import argparse
 import threading
 import bittensor as bt
 
-from typing import List
-from traceback import print_exception
-
-from base.neuron import BaseNeuron
-from base.config import add_validator_args
+from atom.base.neuron import BaseNeuron
+from atom.base.config import add_validator_args
 
 from atom.mock.mock import MockDendrite
 from atom.base.weights import ValidatorWeightSettingMixin
