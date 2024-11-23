@@ -52,7 +52,8 @@ class BaseNeuron(ABC):
 
     @property
     @abstractmethod
-    def spec_version(self): ...
+    def spec_version(self):
+        ...
 
     @property
     def block(self):
@@ -102,10 +103,12 @@ class BaseNeuron(ABC):
         self.step = 0
 
     @abstractmethod
-    async def forward(self, synapse: bt.Synapse) -> bt.Synapse: ...
+    async def forward(self, synapse: bt.Synapse) -> bt.Synapse:
+        ...
 
     @abstractmethod
-    def run(self): ...
+    def run(self):
+        ...
 
     def sync(self):
         """
@@ -185,16 +188,16 @@ class BaseNeuron(ABC):
             self.is_running = False
             bt.logging.debug("Stopped")
 
-    def __enter__(self): 
+    def __enter__(self):
         # should call self.run_in_background_thread() or self.run() here
         raise NotImplementedError
-    
-    async def __aenter__(self): 
+
+    async def __aenter__(self):
         raise NotImplementedError
-    
-    def __exit__(self, exc_type, exc_value, traceback): 
+
+    def __exit__(self, exc_type, exc_value, traceback):
         raise NotImplementedError
-    
+
     async def __aexit__(self, exc_type, exc_value, traceback):
         raise NotImplementedError
 

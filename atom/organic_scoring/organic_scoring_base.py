@@ -75,7 +75,7 @@ class OrganicScoringBase(ABC):
         ), "The scaling factor must be higher than 0."
 
         self._organic_queue = organic_queue
-        
+
         if self._organic_queue is None:
             self._organic_queue = OrganicQueue()
 
@@ -157,11 +157,11 @@ class OrganicScoringBase(ABC):
                 await asyncio.sleep(1)
 
     @abstractmethod
-    async def forward(self) -> dict[str, Any]: 
+    async def forward(self) -> dict[str, Any]:
         """
         Method to establish the sampling logic for the organic scoring task.
         Sample data from the organic queue or the synthetic dataset (if available).
-        
+
         Expected to return a dictionary with information from the sampling method.
         If the trigger is based on seconds, the dictionary should contain the key "total_elapsed_time".
         """
