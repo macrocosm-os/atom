@@ -46,7 +46,7 @@ class MockValidator(BaseValidatorNeuron):
         self.organic_validator = MockOrganicValidator(axon=self.axon, **organic_config)
 
     def run(self):
-        return None 
+        return None
 
     def spec_version(self):
         return spec_version
@@ -61,10 +61,10 @@ class MockValidator(BaseValidatorNeuron):
         return 0.0
 
     # The following methods are not implemented in the mock classes, so they should return False.
-    def should_set_weights(self): 
-        return False 
-    
-    def should_sync_metagraph(self): 
+    def should_set_weights(self):
+        return False
+
+    def should_sync_metagraph(self):
         return False
 
 
