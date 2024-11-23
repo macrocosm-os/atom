@@ -169,7 +169,7 @@ class BaseMinerNeuron(BaseNeuron):
         Returns:
             bool: Whether to blacklist the synapse or not.
         """
-        ... 
+        ...
 
     @abstractmethod
     def priority(self, synapse: bt.Synapse) -> float:

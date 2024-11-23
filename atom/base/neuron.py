@@ -131,7 +131,7 @@ class BaseNeuron(ABC):
         # --- Check for registration.
         if self.config.mock:
             return
-        
+
         if not self.subtensor.is_hotkey_registered(
             netuid=self.config.netuid,
             hotkey_ss58=self.wallet.hotkey.ss58_address,
