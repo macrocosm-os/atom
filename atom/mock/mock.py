@@ -1,10 +1,12 @@
 import bittensor as bt
 
+
 def create_wallet():
-    """ This function creates a wallet for the network. """
-    wallet = bt.wallet(name = 'test_coldkey', hotkey = 'test_hotkey')
+    """This function creates a wallet for the network."""
+    wallet = bt.wallet(name="test_coldkey", hotkey="test_hotkey")
     wallet.create_if_non_existent()
-    return wallet 
+    return wallet
+
 
 class MockSubtensor(bt.MockSubtensor):
     def __init__(self, netuid, n=16, wallet=None, network="mock"):
