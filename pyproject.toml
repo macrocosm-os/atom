@@ -5,7 +5,7 @@ description = "macrocosmos-sdk"
 authors = ["Brian McCrindle <brian@macrocosmos.ai>"]
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.12" # Adjust based on your Python version
+python = ">=3.9,<3.13" # Adjust based on your Python version
 bittensor = ">=8.3.1"
 pydantic = ">=2.3,<3"
 datasets = ">=2.14.6"
