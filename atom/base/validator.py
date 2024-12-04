@@ -45,7 +45,7 @@ class BaseValidatorNeuron(BaseNeuron, ValidatorWeightSettingMixin):
             self.metagraph.n, dtype=torch.float32, device=self.device
         )
 
-        # Init sync with the network. Updates the metagraph.
+        # Initial sync with the network. Updates the metagraph.
         self.sync()
 
         # Serve axon to enable external connections.
@@ -62,6 +62,18 @@ class BaseValidatorNeuron(BaseNeuron, ValidatorWeightSettingMixin):
         self.is_running: bool = False
         self.thread: threading.Thread = None
         self.lock = asyncio.Lock()
+
+    async def async_updater(self):
+        """ Intended to be run as an async entrypoint for the validator to:
+        1. Sync the metagraph.
+        2. Set the weights.
+        3. Save the state of the validator.
+        """
+        bt.logging.info("starting the sync_loop")
+        while True:
+            self.sync()
+            SECONDS_PER_BLOCK = 12
+            await asyncio.sleep(self.config.neuron.epoch_length * SECONDS_PER_BLOCK)
 
     def serve_axon(self):
         """Serve axon to enable external connections."""
@@ -89,7 +101,17 @@ class BaseValidatorNeuron(BaseNeuron, ValidatorWeightSettingMixin):
     def __enter__(self):
         self.run()
         return self
-
+    
+    async def __aenter__(self):
+        """ 
+        Entry point for the validator to start running in the background. 
+        Indended to be overwritten by the user, as this is an example. 
+        """
+        bt.logging.debug("Starting validator in background thread.")
+        self.loop.create_task(self.async_updater())
+        self.is_running = True
+        return self
+    
     def __exit__(self, exc_type, exc_value, traceback):
         """
         Stops the validator's background operations upon exiting the context.
