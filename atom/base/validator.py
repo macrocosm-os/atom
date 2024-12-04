@@ -48,8 +48,12 @@ class BaseValidatorNeuron(BaseNeuron, ValidatorWeightSettingMixin):
         # Initial sync with the network. Updates the metagraph.
         self.sync()
 
-        # Serve axon to enable external connections.
+        # Serve axon to enable external connections. axon attachments need to be configured. 
         if not self.config.neuron.axon_off:
+            self.axon = bt.axon(
+                wallet=self.wallet,
+                config=self.config
+            )
             self.serve_axon()
         else:
             bt.logging.warning("axon off, not serving ip to chain.")
@@ -76,27 +80,11 @@ class BaseValidatorNeuron(BaseNeuron, ValidatorWeightSettingMixin):
             await asyncio.sleep(self.config.neuron.epoch_length * SECONDS_PER_BLOCK)
 
     def serve_axon(self):
-        """Serve axon to enable external connections."""
-
-        bt.logging.info("serving ip to chain...")
+        """Serve axon to enable external connections"""
         try:
-            self.axon = bt.axon(wallet=self.wallet, config=self.config)
-
-            try:
-                self.subtensor.serve_axon(
-                    netuid=self.config.netuid,
-                    axon=self.axon,
-                )
-                bt.logging.info(
-                    f"Running validator {self.axon} on network: {self.config.subtensor.chain_endpoint} with netuid: {self.config.netuid}"
-                )
-            except Exception as e:
-                bt.logging.error(f"Failed to serve Axon with exception: {e}")
-                pass
-
+            self.axon.serve(netuid=self.config.netuid, subtensor=self.subtensor).start()
         except Exception as e:
-            bt.logging.error(f"Failed to create Axon initialize with exception: {e}")
-            pass
+            bt.logging.error(f"Failed to serve axon: {e}")
 
     def __enter__(self):
         self.run()
