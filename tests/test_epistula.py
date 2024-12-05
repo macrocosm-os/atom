@@ -2,6 +2,7 @@ import pytest
 from substrateinterface import Keypair
 from atom.epistula.epistula import Epistula
 
+
 class TestEpistula:
     @pytest.fixture
     def epistula(self):
@@ -15,7 +16,7 @@ class TestEpistula:
     def keypair(self):
         # Create a real keypair for testing
         return Keypair.create_from_mnemonic(Keypair.generate_mnemonic())
-    
+
     @pytest.fixture
     def receiver_keypair(self):
         return Keypair.create_from_mnemonic(Keypair.generate_mnemonic())
@@ -54,7 +55,9 @@ class TestEpistula:
 
     def test_generate_header_with_signed_for(self, epistula, keypair, receiver_keypair):
         body = epistula.create_message_body({"test": "value"})
-        headers = epistula.generate_header(keypair, body, signed_for=receiver_keypair.ss58_address)
+        headers = epistula.generate_header(
+            keypair, body, signed_for=receiver_keypair.ss58_address
+        )
 
         # Check additional headers exist
         assert "Epistula-Signed-For" in headers
@@ -67,90 +70,99 @@ class TestEpistula:
     def test_verify_signature_valid(self, epistula, keypair):
         body = epistula.create_message_body({"test": "value"})
         headers = epistula.generate_header(keypair, body)
-        
-        result = epistula.verify_signature(
-            headers["Epistula-Request-Signature"],
-            body,
-            headers["Epistula-Timestamp"],
-            headers["Epistula-Uuid"],
-            headers["Epistula-Signed-By"]
-        )
-        
-        assert result is None  # None indicates successful verification
 
-    def test_verify_signature_with_signed_for(self, epistula, keypair, receiver_keypair):
-        body = epistula.create_message_body({"test": "value"})
-        headers = epistula.generate_header(keypair, body, signed_for=receiver_keypair.ss58_address)
-        
         result = epistula.verify_signature(
             headers["Epistula-Request-Signature"],
             body,
             headers["Epistula-Timestamp"],
             headers["Epistula-Uuid"],
             headers["Epistula-Signed-By"],
-            signed_for=headers["Epistula-Signed-For"]
         )
-        
+
+        assert result is None  # None indicates successful verification
+
+    def test_verify_signature_with_signed_for(
+        self, epistula, keypair, receiver_keypair
+    ):
+        body = epistula.create_message_body({"test": "value"})
+        headers = epistula.generate_header(
+            keypair, body, signed_for=receiver_keypair.ss58_address
+        )
+
+        result = epistula.verify_signature(
+            headers["Epistula-Request-Signature"],
+            body,
+            headers["Epistula-Timestamp"],
+            headers["Epistula-Uuid"],
+            headers["Epistula-Signed-By"],
+            signed_for=headers["Epistula-Signed-For"],
+        )
+
         assert result is None
 
     def test_verify_signature_stale_request(self, epistula, keypair):
         body = epistula.create_message_body({"test": "value"})
         headers = epistula.generate_header(keypair, body)
-        
+
         # Set current time to be well past the allowed delta
         current_time = int(headers["Epistula-Timestamp"]) + 10000
-        
+
         result = epistula.verify_signature(
             headers["Epistula-Request-Signature"],
             body,
             headers["Epistula-Timestamp"],
             headers["Epistula-Uuid"],
             headers["Epistula-Signed-By"],
-            now=current_time
+            now=current_time,
         )
-        
+
         assert result == "Request is too stale"
 
-    @pytest.mark.parametrize("invalid_input,expected_error", [
-        ({"signature": 123}, "Invalid signature type"),
-        ({"signed_by": None}, "Invalid sender key type"),
-        ({"uuid": 123}, "Invalid UUID type"),
-        ({"body": "not-bytes"}, "Body is not of type bytes"),
-        ({"signed_for": 123}, "Invalid receiver key type"),
-        ({"timestamp": "not-a-number"}, "Invalid Timestamp"),
-    ])
-    def test_verify_signature_invalid_inputs(self, epistula, keypair, invalid_input, expected_error):
+    @pytest.mark.parametrize(
+        "invalid_input,expected_error",
+        [
+            ({"signature": 123}, "Invalid signature type"),
+            ({"signed_by": None}, "Invalid sender key type"),
+            ({"uuid": 123}, "Invalid UUID type"),
+            ({"body": "not-bytes"}, "Body is not of type bytes"),
+            ({"signed_for": 123}, "Invalid receiver key type"),
+            ({"timestamp": "not-a-number"}, "Invalid Timestamp"),
+        ],
+    )
+    def test_verify_signature_invalid_inputs(
+        self, epistula, keypair, invalid_input, expected_error
+    ):
         body = epistula.create_message_body({"test": "value"})
         headers = epistula.generate_header(keypair, body)
-        
+
         # Prepare base valid arguments
         args = {
             "signature": headers["Epistula-Request-Signature"],
             "body": body,
             "timestamp": headers["Epistula-Timestamp"],
             "uuid": headers["Epistula-Uuid"],
-            "signed_by": headers["Epistula-Signed-By"]
+            "signed_by": headers["Epistula-Signed-By"],
         }
-        
+
         # Update with invalid input
         args.update(invalid_input)
-        
+
         result = epistula.verify_signature(**args)
         assert result == expected_error
 
     def test_verify_signature_tampered_body(self, epistula, keypair):
         original_body = epistula.create_message_body({"test": "value"})
         headers = epistula.generate_header(keypair, original_body)
-        
+
         # Tamper with the body
         tampered_body = epistula.create_message_body({"test": "tampered"})
-        
+
         result = epistula.verify_signature(
             headers["Epistula-Request-Signature"],
             tampered_body,
             headers["Epistula-Timestamp"],
             headers["Epistula-Uuid"],
-            headers["Epistula-Signed-By"]
+            headers["Epistula-Signed-By"],
         )
-        
+
         assert result == "Signature Mismatch"
