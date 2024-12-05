@@ -120,11 +120,6 @@ class Epistula:
         except ValidationError as e:
             return f"Validation Error: {str(e)}"
 
-        try:
-            timestamp = int(timestamp)
-        except ValueError:
-            return "Invalid Timestamp"
-
         # Time validation
         now = now if now is not None else round(time.time() * 1000)
         if timestamp + self.ALLOWED_DELTA_MS < now:
