@@ -2,21 +2,20 @@
 # Copyright © 2024 Macrocosmos AI
 
 import copy
-import time
 import torch
 import asyncio
 import argparse
 import threading
 import bittensor as bt
+from typing import List
+from abc import abstractmethod
 
+from atom.mock.mock import MockDendrite
 from atom.base.neuron import BaseNeuron
 from atom.base.config import add_validator_args
 
-from atom.mock.mock import MockDendrite
-from atom.base.weights import ValidatorWeightSettingMixin
 
-
-class BaseValidatorNeuron(BaseNeuron, ValidatorWeightSettingMixin):
+class BaseValidatorNeuron(BaseNeuron):
     """
     Base class for Bittensor validators. Your validator should inherit from this class.
     """
@@ -170,10 +169,22 @@ class BaseValidatorNeuron(BaseNeuron, ValidatorWeightSettingMixin):
 
     def load_state(self):
         """Loads the state of the validator from a file."""
-        bt.logging.info("Loading validator state.")
+        try:
+            state = torch.load(self.config.neuron.full_path + "/state.pt")
+            self.step = state["step"]
+            self.scores = state["scores"]
+            self.hotkeys = state["hotkeys"]
+            bt.logging.info("Loaded previously saved validator state information.")
+        except:
+            bt.logging.info("Previous validator state not found... Starting from scratch")
 
-        # Load the state of the validator from file.
-        state = torch.load(self.config.neuron.full_path + "/state.pt")
-        self.step = state["step"]
-        self.scores = state["scores"]
-        self.hotkeys = state["hotkeys"]
+    @abstractmethod
+    def set_weights(self):
+        """Sets the validator weights to the metagraph hotkeys based on the scores it has received from the miners. 
+        The weights determine the trust and incentive level the validator assigns to miner nodes on the network."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def update_scores(self, rewards: torch.FloatTensor, uids: List[int]):
+        """Performs exponential moving average on the scores based on the rewards received from the miners."""
+        raise NotImplementedError

@@ -2,7 +2,6 @@ import torch
 import bittensor as bt
 from typing import List
 
-
 class ValidatorWeightSettingMixin:
     """Class to handle the functional separation of setting weights for the validator."""
 
@@ -19,17 +18,19 @@ class ValidatorWeightSettingMixin:
 
         # Calculate the average reward for each uid across non-zero values.
         # Replace any NaN values with 0.
-        raw_weights = torch.nn.functional.normalize(self.scores, p=1, dim=0)
+        raw_weights = (
+            torch.nn.functional.normalize(self.scores, p=1, dim=0).to("cpu").numpy()
+        )
 
         bt.logging.debug("raw_weights", raw_weights)
-        bt.logging.debug("raw_weight_uids", self.metagraph.uids.to("cpu"))
+        bt.logging.debug("raw_weight_uids", self.metagraph.uids)
         # Process the raw weights to final_weights via subtensor limitations.
         (
             processed_weight_uids,
             processed_weights,
         ) = bt.utils.weight_utils.process_weights_for_netuid(
-            uids=self.metagraph.uids.to("cpu"),
-            weights=raw_weights.to("cpu"),
+            uids=self.metagraph.uids,
+            weights=raw_weights,
             netuid=self.config.netuid,
             subtensor=self.subtensor,
             metagraph=self.metagraph,
@@ -57,10 +58,8 @@ class ValidatorWeightSettingMixin:
             wait_for_inclusion=False,
             version_key=self.spec_version,
         )
-        if result is True:
-            bt.logging.info("set_weights on chain successfully!")
-        else:
-            bt.logging.error("set_weights failed")
+
+        return result
 
     def update_scores(self, rewards: torch.FloatTensor, uids: List[int]):
         """Performs exponential moving average on the scores based on the rewards received from the miners."""
