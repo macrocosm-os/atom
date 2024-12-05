@@ -3,10 +3,10 @@ import json
 from math import ceil
 from uuid import uuid4
 from hashlib import sha256
+from substrateinterface import Keypair
 from typing import Dict, Any, Optional, Annotated
 
-from substrateinterface import Keypair
-
+from .__init__ import EPISTULA_VERSION
 from pydantic import BaseModel, Field, ValidationError
 
 class VerifySignatureRequest(BaseModel):
@@ -26,8 +26,6 @@ class Epistula:
     Manages the generation and verification of cryptographic signatures for messages.
     Handles both header generation and signature verification in a unified interface.
     """
-
-    VERSION = "2"
 
     def __init__(self, allowed_delta_ms: Optional[int] = None):
         self.ALLOWED_DELTA_MS = allowed_delta_ms if allowed_delta_ms is not None else 8000
@@ -57,7 +55,7 @@ class Epistula:
         message = f"{sha256(body).hexdigest()}.{uuid}.{timestamp}.{signed_for or ''}"
 
         headers = {
-            "Epistula-Version": self.VERSION,
+            "Epistula-Version": EPISTULA_VERSION,
             "Epistula-Timestamp": str(timestamp),
             "Epistula-Uuid": uuid,
             "Epistula-Signed-By": hotkey.ss58_address,
