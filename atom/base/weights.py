@@ -3,7 +3,10 @@ import bittensor as bt
 from typing import List
 
 class ValidatorWeightSettingMixin:
-    """Class to handle the functional separation of setting weights for the validator."""
+    """Class to handle the functional separation of setting weights for the validator.
+    
+    This is an example of a Mixin class that can be used to separate the functionality of setting weights for the validator from the main class. 
+    """
 
     def set_weights(self):
         """
