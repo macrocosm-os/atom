@@ -85,6 +85,9 @@ class BaseValidatorNeuron(BaseNeuron):
         except Exception as e:
             bt.logging.error(f"Failed to serve axon: {e}")
 
+    def run(self):
+        return self 
+
     def __enter__(self):
         self.run()
         return self
