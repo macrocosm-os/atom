@@ -66,6 +66,12 @@ class MockValidator(BaseValidatorNeuron):
 
     def should_sync_metagraph(self):
         return False
+    
+    def set_weights(self):
+        return False
+    
+    def update_scores(self):
+        return False
 
 
 class MockOrganicValidator(OrganicScoringBase):
