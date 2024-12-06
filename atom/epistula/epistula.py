@@ -7,6 +7,7 @@ from typing import Dict, Any, Optional, Annotated
 
 from substrateinterface import Keypair
 
+
 class Epistula:
     """
     Manages the generation and verification of cryptographic signatures for messages.
