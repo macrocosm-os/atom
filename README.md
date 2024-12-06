@@ -22,6 +22,8 @@ The current vision of this sdk is to provide us with a backbone that all of us c
 3. Chain-related tools (writing, reading)
 4. Organic Scoring tools
 
+By organics we mean..
+
 ## Working with Atom
 If you want to use it for your subnet development, you can install using: 
 ```
