@@ -83,7 +83,7 @@ class BaseValidatorNeuron(BaseNeuron):
             bt.logging.error(f"Failed to serve axon: {e}")
 
     def run(self):
-        return self 
+        return self
 
     def __enter__(self):
         self.run()
@@ -176,12 +176,15 @@ class BaseValidatorNeuron(BaseNeuron):
             self.hotkeys = state["hotkeys"]
             bt.logging.info("Loaded previously saved validator state information.")
         except:
-            bt.logging.info("Previous validator state not found... Starting from scratch")
+            bt.logging.info(
+                "Previous validator state not found... Starting from scratch"
+            )
 
     @abstractmethod
     def set_weights(self):
-        """Sets the validator weights to the metagraph hotkeys based on the scores it has received from the miners. 
-        The weights determine the trust and incentive level the validator assigns to miner nodes on the network."""
+        """Sets the validator weights to the metagraph hotkeys based on the scores it has received from the miners.
+        The weights determine the trust and incentive level the validator assigns to miner nodes on the network.
+        """
         raise NotImplementedError
 
     @abstractmethod

@@ -2,10 +2,11 @@ import torch
 import bittensor as bt
 from typing import List
 
+
 class ValidatorWeightSettingMixin:
     """Class to handle the functional separation of setting weights for the validator.
-    
-    This is an example of a Mixin class that can be used to separate the functionality of setting weights for the validator from the main class. 
+
+    This is an example of a Mixin class that can be used to separate the functionality of setting weights for the validator from the main class.
     """
 
     def set_weights(self):
@@ -16,7 +17,7 @@ class ValidatorWeightSettingMixin:
         # Check if self.scores contains any NaN values and log a warning if it does.
         if torch.isnan(self.scores).any():
             bt.logging.warning(
-                f"Scores contain NaN values. This may be due to a lack of responses from miners, or a bug in your reward functions."
+                "Scores contain NaN values. This may be due to a lack of responses from miners, or a bug in your reward functions."
             )
 
         # Calculate the average reward for each uid across non-zero values.
