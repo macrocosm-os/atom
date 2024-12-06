@@ -1,15 +1,12 @@
 # The MIT License (MIT)
 # Copyright © 2024 Macrocosmos AI.
 
-import copy
 import threading
 from abc import ABC, abstractmethod
 
 import bittensor as bt
 
 from atom.base.ttl import ttl_get_block
-from atom.base.config import check_config, add_args, config
-
 from atom.mock.mock import MockSubtensor, MockMetagraph, create_wallet
 
 
@@ -21,16 +18,19 @@ class BaseNeuron(ABC):
     """
 
     @classmethod
+    @abstractmethod
     def check_config(cls, config: "bt.Config"):
-        check_config(cls, config)
+        ...
 
     @classmethod
+    @abstractmethod
     def add_args(cls, parser):
-        add_args(cls, parser)
+        ...
 
     @classmethod
+    @abstractmethod
     def config(cls):
-        return config(cls)
+        ...
 
     subtensor: "bt.subtensor"
     wallet: "bt.wallet"
@@ -44,12 +44,14 @@ class BaseNeuron(ABC):
     @property
     def block(self):
         return ttl_get_block(self)
+    
+    @classmethod
+    @abstractmethod
+    def create_config(cls, config=None) -> "bt.Config":
+        ...
 
     def __init__(self, config=None):
-        base_config = copy.deepcopy(config or BaseNeuron.config())
-        self.config = self.config()
-        self.config.merge(base_config)
-        self.check_config(self.config)
+        self.config = BaseNeuron.create_config(config = config)
 
         # Set up logging with the provided configuration and directory.
         bt.logging(config=self.config, logging_dir=self.config.full_path)
