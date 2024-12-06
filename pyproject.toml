@@ -12,6 +12,7 @@ datasets = ">=2.14.6"
 nltk = "==3.8.1"
 loguru = "^0.7.2"
 torch = "2.3.0"
+substrate-interface = "^1.7.11"
 
 [tool.poetry.dev-dependencies]
 black = "^23.9.1"

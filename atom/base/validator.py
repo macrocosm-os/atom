@@ -47,12 +47,9 @@ class BaseValidatorNeuron(BaseNeuron):
         # Initial sync with the network. Updates the metagraph.
         self.sync()
 
-        # Serve axon to enable external connections. axon attachments need to be configured. 
+        # Serve axon to enable external connections. axon attachments need to be configured.
         if not self.config.neuron.axon_off:
-            self.axon = bt.axon(
-                wallet=self.wallet,
-                config=self.config
-            )
+            self.axon = bt.axon(wallet=self.wallet, config=self.config)
             self.serve_axon()
         else:
             bt.logging.warning("axon off, not serving ip to chain.")
@@ -67,7 +64,7 @@ class BaseValidatorNeuron(BaseNeuron):
         self.lock = asyncio.Lock()
 
     async def async_updater(self):
-        """ Intended to be run as an async entrypoint for the validator to:
+        """Intended to be run as an async entrypoint for the validator to:
         1. Sync the metagraph.
         2. Set the weights.
         3. Save the state of the validator.
@@ -91,17 +88,17 @@ class BaseValidatorNeuron(BaseNeuron):
     def __enter__(self):
         self.run()
         return self
-    
+
     async def __aenter__(self):
-        """ 
-        Entry point for the validator to start running in the background. 
-        Indended to be overwritten by the user, as this is an example. 
+        """
+        Entry point for the validator to start running in the background.
+        Indended to be overwritten by the user, as this is an example.
         """
         bt.logging.debug("Starting validator in background thread.")
         self.loop.create_task(self.async_updater())
         self.is_running = True
         return self
-    
+
     def __exit__(self, exc_type, exc_value, traceback):
         """
         Stops the validator's background operations upon exiting the context.
