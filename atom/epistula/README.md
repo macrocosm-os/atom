@@ -5,7 +5,7 @@ Official documentation for the epistula protocol can be found [here](https://epi
 Epistula is a way to send public messages un a cryptographic way. It uses ed25519 signatures to sign messages and verify them. It also uses timestamps to prevent replay attacks. Epistula can be used for any protocol that uses ed25519 signatures and requires secure message passing.
 
 ## Why use epistula?
-Epistula is a simple way to send messages between two parties. It is secure and easy to use. If you don't want to rely on outside services such as the `bittensor-sdk` to send messages, epistula is a good alternative.
+Epistula can be useful if you don't want to rely on outside services such as the `bittensor-sdk` to send messages. On top of this it can be used as a way to communicate outside of just validator -> miner communication.
 
 ## Quick Start
 
