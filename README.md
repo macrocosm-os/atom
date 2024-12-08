@@ -22,7 +22,7 @@ The current vision of this sdk is to provide us with a backbone that all of us c
 3. Chain-related tools (writing, reading)
 4. Organic Scoring tools
 
-By organics we mean..
+Organic queries to the subnetwork refer to jobs input by users/customers. To facilitate the eventual productization of these subnetworks, it is important that we have the famework to support organic interactions, allowing their seamless integration into the miner-validator flow.
 
 ## Working with Atom
 If you want to use it for your subnet development, you can install using: 
