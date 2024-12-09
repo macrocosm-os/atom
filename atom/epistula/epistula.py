@@ -3,9 +3,23 @@ import json
 from math import ceil
 from uuid import uuid4
 from hashlib import sha256
+from substrateinterface import Keypair
 from typing import Dict, Any, Optional, Annotated
 
-from substrateinterface import Keypair
+from .__init__ import EPISTULA_VERSION
+from pydantic import BaseModel, Field, ValidationError
+
+class VerifySignatureRequest(BaseModel):
+    """
+    Pydantic model for the verify_signature input parameters.
+    """
+    body: bytes  # Directly use bytes
+    timestamp: int
+    signature: Annotated[str, Field(regex=r"^0x[a-fA-F0-9]{64}$")]  # Ensures signature format
+    uuid: Annotated[str, Field(min_length=36, max_length=36)]  # UUID with constraints
+    signed_by: str
+    signed_for: Optional[str] = None
+    now: Optional[int] = None
 
 
 class Epistula:
@@ -14,12 +28,8 @@ class Epistula:
     Handles both header generation and signature verification in a unified interface.
     """
 
-    VERSION = "2"
-
     def __init__(self, allowed_delta_ms: Optional[int] = None):
-        self.ALLOWED_DELTA_MS = 8000
-        if allowed_delta_ms is not None:
-            self.ALLOWED_DELTA_MS = allowed_delta_ms
+        self.ALLOWED_DELTA_MS = allowed_delta_ms if allowed_delta_ms is not None else 8000
 
     def generate_header(
         self,
@@ -33,7 +43,7 @@ class Epistula:
         Args:
             hotkey: The keypair used for signing
             body: The message body in bytes
-            signed_for: Optional receiver's address
+            signed_for: Receiver's address (optional)
 
         Returns:
             Dictionary containing all necessary headers
@@ -46,7 +56,7 @@ class Epistula:
         message = f"{sha256(body).hexdigest()}.{uuid}.{timestamp}.{signed_for or ''}"
 
         headers = {
-            "Epistula-Version": self.VERSION,
+            "Epistula-Version": EPISTULA_VERSION,
             "Epistula-Timestamp": str(timestamp),
             "Epistula-Uuid": uuid,
             "Epistula-Signed-By": hotkey.ss58_address,
@@ -87,28 +97,27 @@ class Epistula:
             timestamp: Message timestamp
             uuid: Message UUID
             signed_by: Sender's address
-            signed_for: Optional receiver's address
-            now: Current timestamp (defaults to current time if not provided)
+            signed_for: Receiver's address (optional)
+            now: Current timestamp (defaults to current time if not provided) in seconds
 
         Returns:
             None if verification succeeds, error message string if it fails
         """
-        # Input validation
-        if not isinstance(signature, str):
-            return "Invalid signature type"
-        if not isinstance(signed_by, str):
-            return "Invalid sender key type"
-        if not isinstance(uuid, str):
-            return "Invalid UUID type"
-        if not isinstance(body, bytes):
-            return "Body is not of type bytes"
-        if signed_for is not None and not isinstance(signed_for, str):
-            return "Invalid receiver key type"
 
+        #Pydantic will enforce the validation typing rules
         try:
-            timestamp = int(timestamp)
-        except ValueError:
-            return "Invalid Timestamp"
+            VerifySignatureRequest(
+                body=body,
+                timestamp=timestamp,
+                signature=signature,
+                uuid=uuid,
+                signed_by=signed_by,
+                signed_for=signed_for,
+                now=now,
+            )
+
+        except ValidationError as e:
+            return f"Validation Error: {str(e)}"
 
         # Time validation
         now = now if now is not None else round(time.time() * 1000)
