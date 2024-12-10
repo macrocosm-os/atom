@@ -15,7 +15,7 @@ class VerifySignatureRequest(BaseModel):
     """
     body: bytes  # Directly use bytes
     timestamp: int
-    signature: Annotated[str, Field(regex=r"^0x[a-fA-F0-9]{64}$")]  # Ensures signature format
+    signature: Annotated[str, Field(pattern=r"^0x[a-fA-F0-9]{64}$")]  # Ensures signature format
     uuid: Annotated[str, Field(min_length=36, max_length=36)]  # UUID with constraints
     signed_by: str
     signed_for: Optional[str] = None
