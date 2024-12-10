@@ -140,4 +140,4 @@ class Epistula:
     @staticmethod
     def create_message_body(data: Dict) -> bytes:
         """Utility method to create message body from dictionary data"""
-        return json.dumps(data).encode("utf-8")
+        return json.dumps(data, default=str, sort_keys=True).encode("utf-8")
