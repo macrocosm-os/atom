@@ -1,4 +1,4 @@
-import torch
+import numpy as np
 import bittensor as bt
 from typing import List
 
@@ -15,16 +15,15 @@ class ValidatorWeightSettingMixin:
         """
 
         # Check if self.scores contains any NaN values and log a warning if it does.
-        if torch.isnan(self.scores).any():
+        if np.isnan(self.scores).any():
             bt.logging.warning(
                 "Scores contain NaN values. This may be due to a lack of responses from miners, or a bug in your reward functions."
             )
 
         # Calculate the average reward for each uid across non-zero values.
         # Replace any NaN values with 0.
-        raw_weights = (
-            torch.nn.functional.normalize(self.scores, p=1, dim=0).to("cpu").numpy()
-        )
+        raw_weights = (self.scores / (np.sum(self.scores, axis=0)+1e-6)).astype(np.float32)
+
 
         bt.logging.debug("raw_weights", raw_weights)
         bt.logging.debug("raw_weight_uids", self.metagraph.uids)
@@ -65,32 +64,31 @@ class ValidatorWeightSettingMixin:
 
         return result
 
-    def update_scores(self, rewards: torch.FloatTensor, uids: List[int]):
+    def update_scores(self, rewards: np.ndarray, uids: List[int]):
         """Performs exponential moving average on the scores based on the rewards received from the miners."""
 
         # Check if rewards contains NaN values.
-        if torch.isnan(rewards).any():
-            bt.logging.warning(f"NaN values detected in rewards: {rewards}")
+        if np.isnan(rewards).any():
+            print(f"Warning: NaN values detected in rewards: {rewards}")
             # Replace any NaN values in rewards with 0.
-            rewards = torch.nan_to_num(rewards, 0)
+            rewards = np.nan_to_num(rewards, nan=0)
 
-        # Check if `uids` is already a tensor and clone it to avoid the warning.
-        if isinstance(uids, torch.Tensor):
-            uids_tensor = uids.clone().detach()
+        # Check if `uids` is already a NumPy array.
+        if isinstance(uids, np.ndarray):
+            uids_array = uids.copy()  # Create a copy to avoid modifying the original.
         else:
-            uids_tensor = torch.tensor(uids).to(self.device)
+            uids_array = np.array(uids)  # Convert `uids` to a NumPy array.
 
-        # Compute forward pass rewards, assumes uids are mutually exclusive.
-        # shape: [ metagraph.n ]
-        scattered_rewards: torch.FloatTensor = self.scores.scatter(
-            0, uids_tensor, rewards
-        ).to(self.device)
-        bt.logging.debug(f"Scattered rewards: {rewards}")
+        # Initialize rewards array for all indices with zeros.
+        scattered_rewards = np.zeros_like(self.scores, dtype=np.float32)
+        
+        # Assign rewards to the appropriate indices based on `uids`.
+        scattered_rewards[uids_array] = rewards
 
-        # Update scores with rewards produced by this step.
-        # shape: [ metagraph.n ]
-        alpha: float = self.config.neuron.moving_average_alpha
-        self.scores: torch.FloatTensor = alpha * scattered_rewards + (
-            1 - alpha
-        ) * self.scores.to(self.device)
+        bt.logging.debug(f"Scattered rewards: {scattered_rewards}")
+
+        # Update scores using exponential moving average.
+        alpha = self.config.neuron.moving_average_alpha
+        self.scores = alpha * scattered_rewards + (1 - alpha) * self.scores
+
         bt.logging.debug(f"Updated moving avg scores: {self.scores}")
