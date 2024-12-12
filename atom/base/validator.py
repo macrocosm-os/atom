@@ -2,7 +2,8 @@
 # Copyright © 2024 Macrocosmos AI
 
 import copy
-import torch
+import pickle
+import numpy as np
 import asyncio
 import argparse
 import threading
@@ -40,9 +41,7 @@ class BaseValidatorNeuron(BaseNeuron):
 
         # Set up initial scoring weights for validation
         bt.logging.info("Building validation weights.")
-        self.scores = torch.zeros(
-            self.metagraph.n, dtype=torch.float32, device=self.device
-        )
+        self.scores = np.zeros(self.metagraph.n, dtype=np.float32)
 
         # Initial sync with the network. Updates the metagraph.
         self.sync()
@@ -145,7 +144,7 @@ class BaseValidatorNeuron(BaseNeuron):
         # If so, we need to add new hotkeys and moving averages.
         if len(self.hotkeys) < len(self.metagraph.hotkeys):
             # Update the size of the moving average scores.
-            new_moving_average = torch.zeros((self.metagraph.n)).to(self.device)
+            new_moving_average = np.zeros((self.metagraph.n))
             min_len = min(len(self.hotkeys), len(self.scores))
             new_moving_average[:min_len] = self.scores[:min_len]
             self.scores = new_moving_average
@@ -157,25 +156,25 @@ class BaseValidatorNeuron(BaseNeuron):
         """Saves the state of the validator to a file."""
         bt.logging.info("Saving validator state.")
 
-        # Save the state of the validator to file.
-        torch.save(
-            {
-                "step": self.step,
-                "scores": self.scores,
-                "hotkeys": self.hotkeys,
-            },
-            self.config.neuron.full_path + "/state.pt",
-        )
+        # Save the state of the validator to file using numpy.
+        state = {
+            "step": self.step,
+            "scores": self.scores,
+            "hotkeys": self.hotkeys,
+        }
+        with open(self.config.neuron.full_path + "/state.pkl", "wb") as f:
+            pickle.dump(state, f)
 
     def load_state(self):
         """Loads the state of the validator from a file."""
         try:
-            state = torch.load(self.config.neuron.full_path + "/state.pt")
+            with open(self.config.neuron.full_path + "/state.pkl", "rb") as f:
+                state = pickle.load(f)
             self.step = state["step"]
             self.scores = state["scores"]
             self.hotkeys = state["hotkeys"]
             bt.logging.info("Loaded previously saved validator state information.")
-        except:
+        except FileNotFoundError:
             bt.logging.info(
                 "Previous validator state not found... Starting from scratch"
             )
@@ -188,6 +187,6 @@ class BaseValidatorNeuron(BaseNeuron):
         raise NotImplementedError
 
     @abstractmethod
-    def update_scores(self, rewards: torch.FloatTensor, uids: List[int]):
+    def update_scores(self, rewards: np.ndarray, uids: List[int]):
         """Performs exponential moving average on the scores based on the rewards received from the miners."""
         raise NotImplementedError
