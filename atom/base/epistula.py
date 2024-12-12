@@ -6,9 +6,10 @@ from hashlib import sha256
 from substrateinterface import Keypair
 from typing import Dict, Any, Optional, Annotated
 
-from .__init__ import EPISTULA_VERSION
+from ..epistula import EPISTULA_VERSION
 from pydantic import BaseModel, Field, ValidationError
 
+EPISTULA_VERSION = "2"
 
 class VerifySignatureRequest(BaseModel):
     """
