@@ -5,3 +5,4 @@ atom
    :maxdepth: 4
 
    atom
+   tests
