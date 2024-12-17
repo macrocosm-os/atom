@@ -62,6 +62,7 @@ class BaseMinerNeuron(BaseNeuron):
         Initiates and manages the main loop for the miner on the Bittensor network. The main loop handles graceful shutdown on keyboard interrupts and logs unforeseen errors.
 
         This function performs the following primary tasks:
+        
         1. Check for registration on the Bittensor network.
         2. Starts the miner's axon, making it active on the network.
         3. Periodically resynchronizes with the chain; updating the metagraph with the latest network state and setting weights.

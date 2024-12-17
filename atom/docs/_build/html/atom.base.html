@@ -1,0 +1,951 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>atom.base package &#8212; atom 1.0.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="_static/documentation_options.js?v=f9c1cefe"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'atom.base';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="atom.chain package" href="atom.chain.html" />
+    <link rel="prev" title="atom documentation" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">atom 1.0.0 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">atom.base package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atom.chain.html">atom.chain package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atom.epistula.html">atom.epistula package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atom.mock.html">atom.mock package</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="atom.organic_scoring.html">atom.organic_scoring package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="atom.organic_scoring.organic_queue.html">atom.organic_scoring.organic_queue package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atom.organic_scoring.synth_dataset.html">atom.organic_scoring.synth_dataset package</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="atom.organic_scoring.organic_queue.html">atom.organic_scoring.organic_queue package</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/atom.base.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>atom.base package</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-atom.base.config">atom.base.config module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.config.add_args"><code class="docutils literal notranslate"><span class="pre">add_args()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.config.add_miner_args"><code class="docutils literal notranslate"><span class="pre">add_miner_args()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.config.add_validator_args"><code class="docutils literal notranslate"><span class="pre">add_validator_args()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.config.check_config"><code class="docutils literal notranslate"><span class="pre">check_config()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.config.config"><code class="docutils literal notranslate"><span class="pre">config()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-atom.base.miner">atom.base.miner module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.miner.BaseMinerNeuron"><code class="docutils literal notranslate"><span class="pre">BaseMinerNeuron</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.miner.BaseMinerNeuron.add_args"><code class="docutils literal notranslate"><span class="pre">BaseMinerNeuron.add_args()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.miner.BaseMinerNeuron.blacklist"><code class="docutils literal notranslate"><span class="pre">BaseMinerNeuron.blacklist()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.miner.BaseMinerNeuron.priority"><code class="docutils literal notranslate"><span class="pre">BaseMinerNeuron.priority()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.miner.BaseMinerNeuron.resync_metagraph"><code class="docutils literal notranslate"><span class="pre">BaseMinerNeuron.resync_metagraph()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.miner.BaseMinerNeuron.run"><code class="docutils literal notranslate"><span class="pre">BaseMinerNeuron.run()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.miner.BaseMinerNeuron.set_weights"><code class="docutils literal notranslate"><span class="pre">BaseMinerNeuron.set_weights()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-atom.base.neuron">atom.base.neuron module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron"><code class="docutils literal notranslate"><span class="pre">BaseNeuron</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.add_args"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.add_args()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.block"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.block</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.check_config"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.check_config()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.check_registered"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.check_registered()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.config"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.config()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.forward"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.load_state"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.load_state()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.metagraph"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.metagraph</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.run"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.run()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.run_in_background_thread"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.run_in_background_thread()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.save_state"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.save_state()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.should_set_weights"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.should_set_weights()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.should_sync_metagraph"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.should_sync_metagraph()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.spec_version"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.spec_version</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.stop_run_thread"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.stop_run_thread()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.subtensor"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.subtensor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.sync"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.sync()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.wallet"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.wallet</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-atom.base.ttl">atom.base.ttl module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.ttl.ttl_cache"><code class="docutils literal notranslate"><span class="pre">ttl_cache()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.ttl.ttl_get_block"><code class="docutils literal notranslate"><span class="pre">ttl_get_block()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-atom.base.validator">atom.base.validator module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.add_args"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.add_args()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.async_updater"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.async_updater()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.load_state"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.load_state()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.resync_metagraph"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.resync_metagraph()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.run"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.run()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.save_state"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.save_state()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.serve_axon"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.serve_axon()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.set_weights"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.set_weights()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.update_scores"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.update_scores()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-atom.base.weights">atom.base.weights module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.weights.ValidatorWeightSettingMixin"><code class="docutils literal notranslate"><span class="pre">ValidatorWeightSettingMixin</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.weights.ValidatorWeightSettingMixin.set_weights"><code class="docutils literal notranslate"><span class="pre">ValidatorWeightSettingMixin.set_weights()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.weights.ValidatorWeightSettingMixin.update_scores"><code class="docutils literal notranslate"><span class="pre">ValidatorWeightSettingMixin.update_scores()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-atom.base">Module contents</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="atom-base-package">
+<h1>atom.base package<a class="headerlink" href="#atom-base-package" title="Link to this heading">#</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+</section>
+<section id="module-atom.base.config">
+<span id="atom-base-config-module"></span><h2>atom.base.config module<a class="headerlink" href="#module-atom.base.config" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="atom.base.config.add_args">
+<span class="sig-prename descclassname"><span class="pre">atom.base.config.</span></span><span class="sig-name descname"><span class="pre">add_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/config.html#add_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.config.add_args" title="Link to this definition">#</a></dt>
+<dd><p>Adds relevant arguments to the parser for operation.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="atom.base.config.add_miner_args">
+<span class="sig-prename descclassname"><span class="pre">atom.base.config.</span></span><span class="sig-name descname"><span class="pre">add_miner_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/config.html#add_miner_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.config.add_miner_args" title="Link to this definition">#</a></dt>
+<dd><p>Add miner specific arguments to the parser.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="atom.base.config.add_validator_args">
+<span class="sig-prename descclassname"><span class="pre">atom.base.config.</span></span><span class="sig-name descname"><span class="pre">add_validator_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/config.html#add_validator_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.config.add_validator_args" title="Link to this definition">#</a></dt>
+<dd><p>Add validator specific arguments to the parser.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="atom.base.config.check_config">
+<span class="sig-prename descclassname"><span class="pre">atom.base.config.</span></span><span class="sig-name descname"><span class="pre">check_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/config.html#check_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.config.check_config" title="Link to this definition">#</a></dt>
+<dd><p>Checks/validates the config namespace object.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="atom.base.config.config">
+<span class="sig-prename descclassname"><span class="pre">atom.base.config.</span></span><span class="sig-name descname"><span class="pre">config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/config.html#config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.config.config" title="Link to this definition">#</a></dt>
+<dd><p>Returns the configuration object specific to this miner or validator after adding relevant arguments.</p>
+</dd></dl>
+
+</section>
+<section id="module-atom.base.miner">
+<span id="atom-base-miner-module"></span><h2>atom.base.miner module<a class="headerlink" href="#module-atom.base.miner" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="atom.base.miner.BaseMinerNeuron">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">atom.base.miner.</span></span><span class="sig-name descname"><span class="pre">BaseMinerNeuron</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/miner.html#BaseMinerNeuron"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.miner.BaseMinerNeuron" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atom.base.neuron.BaseNeuron" title="atom.base.neuron.BaseNeuron"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseNeuron</span></code></a></p>
+<p>Base class for Bittensor miners.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.miner.BaseMinerNeuron.add_args">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/miner.html#BaseMinerNeuron.add_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.miner.BaseMinerNeuron.add_args" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.miner.BaseMinerNeuron.blacklist">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">blacklist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">synapse</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/miner.html#BaseMinerNeuron.blacklist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.miner.BaseMinerNeuron.blacklist" title="Link to this definition">#</a></dt>
+<dd><p>Blacklist function for miner handles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>synapse</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Synapse</span></code></span>) – The synapse to handle.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Whether to blacklist the synapse or not.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.miner.BaseMinerNeuron.priority">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">priority</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">synapse</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/miner.html#BaseMinerNeuron.priority"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.miner.BaseMinerNeuron.priority" title="Link to this definition">#</a></dt>
+<dd><p>Priority function for miner handles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>synapse</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Synapse</span></code></span>) – The synapse to handle.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The priority of the synapse.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.miner.BaseMinerNeuron.resync_metagraph">
+<span class="sig-name descname"><span class="pre">resync_metagraph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/miner.html#BaseMinerNeuron.resync_metagraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.miner.BaseMinerNeuron.resync_metagraph" title="Link to this definition">#</a></dt>
+<dd><p>Resyncs the metagraph and updates the hotkeys and moving averages based on the new metagraph.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.miner.BaseMinerNeuron.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/miner.html#BaseMinerNeuron.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.miner.BaseMinerNeuron.run" title="Link to this definition">#</a></dt>
+<dd><p>Initiates and manages the main loop for the miner on the Bittensor network. The main loop handles graceful shutdown on keyboard interrupts and logs unforeseen errors.</p>
+<p>This function performs the following primary tasks:</p>
+<ol class="arabic simple">
+<li><p>Check for registration on the Bittensor network.</p></li>
+<li><p>Starts the miner’s axon, making it active on the network.</p></li>
+<li><p>Periodically resynchronizes with the chain; updating the metagraph with the latest network state and setting weights.</p></li>
+</ol>
+<p>The miner continues its operations until <cite>should_exit</cite> is set to True or an external interruption occurs.
+During each epoch of its operation, the miner waits for new blocks on the Bittensor network, updates its
+knowledge of the network (metagraph), and sets its weights. This process ensures the miner remains active
+and up-to-date with the network’s latest state.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>The function leverages the global configurations set during the initialization of the miner.</p></li>
+<li><p>The miner’s axon serves as its interface to the Bittensor network, handling incoming and outgoing requests.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>KeyboardInterrupt</strong> – If the miner is stopped by a manual interruption.</p></li>
+<li><p><strong>Exception</strong> – For unforeseen errors during the miner’s operation, which are logged for diagnosis.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.miner.BaseMinerNeuron.set_weights">
+<span class="sig-name descname"><span class="pre">set_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/miner.html#BaseMinerNeuron.set_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.miner.BaseMinerNeuron.set_weights" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-atom.base.neuron">
+<span id="atom-base-neuron-module"></span><h2>atom.base.neuron module<a class="headerlink" href="#module-atom.base.neuron" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">atom.base.neuron.</span></span><span class="sig-name descname"><span class="pre">BaseNeuron</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/neuron.html#BaseNeuron"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.neuron.BaseNeuron" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Base class for Bittensor miners. This class is abstract and should be inherited by a subclass. It contains the core logic for all neurons; validators and miners.</p>
+<p>In addition to creating a wallet, subtensor, and metagraph, this class also handles the synchronization of the network state via a basic checkpointing mechanism based on epoch length.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.add_args">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/neuron.html#BaseNeuron.add_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.neuron.BaseNeuron.add_args" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.block">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">block</span></span><a class="headerlink" href="#atom.base.neuron.BaseNeuron.block" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.check_config">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/neuron.html#BaseNeuron.check_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.neuron.BaseNeuron.check_config" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.check_registered">
+<span class="sig-name descname"><span class="pre">check_registered</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/neuron.html#BaseNeuron.check_registered"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.neuron.BaseNeuron.check_registered" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.config">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/neuron.html#BaseNeuron.config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.neuron.BaseNeuron.config" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.forward">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">synapse</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/neuron.html#BaseNeuron.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.neuron.BaseNeuron.forward" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Synapse</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.load_state">
+<span class="sig-name descname"><span class="pre">load_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/neuron.html#BaseNeuron.load_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.neuron.BaseNeuron.load_state" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.metagraph">
+<span class="sig-name descname"><span class="pre">metagraph</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">NonTorchMetagraph</span></code></em><a class="headerlink" href="#atom.base.neuron.BaseNeuron.metagraph" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.run">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/neuron.html#BaseNeuron.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.neuron.BaseNeuron.run" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.run_in_background_thread">
+<span class="sig-name descname"><span class="pre">run_in_background_thread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/neuron.html#BaseNeuron.run_in_background_thread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.neuron.BaseNeuron.run_in_background_thread" title="Link to this definition">#</a></dt>
+<dd><p>Starts the operations in a separate background thread.
+This is useful for non-blocking operations.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.save_state">
+<span class="sig-name descname"><span class="pre">save_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/neuron.html#BaseNeuron.save_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.neuron.BaseNeuron.save_state" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.should_set_weights">
+<span class="sig-name descname"><span class="pre">should_set_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/neuron.html#BaseNeuron.should_set_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.neuron.BaseNeuron.should_set_weights" title="Link to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.should_sync_metagraph">
+<span class="sig-name descname"><span class="pre">should_sync_metagraph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/neuron.html#BaseNeuron.should_sync_metagraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.neuron.BaseNeuron.should_sync_metagraph" title="Link to this definition">#</a></dt>
+<dd><p>Check if enough epoch blocks have elapsed since the last checkpoint to sync.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.spec_version">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spec_version</span></span><a class="headerlink" href="#atom.base.neuron.BaseNeuron.spec_version" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.stop_run_thread">
+<span class="sig-name descname"><span class="pre">stop_run_thread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/neuron.html#BaseNeuron.stop_run_thread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.neuron.BaseNeuron.stop_run_thread" title="Link to this definition">#</a></dt>
+<dd><p>Stops the operations that are running in the background thread.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.subtensor">
+<span class="sig-name descname"><span class="pre">subtensor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Subtensor</span></code></em><a class="headerlink" href="#atom.base.neuron.BaseNeuron.subtensor" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.sync">
+<span class="sig-name descname"><span class="pre">sync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/neuron.html#BaseNeuron.sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.neuron.BaseNeuron.sync" title="Link to this definition">#</a></dt>
+<dd><p>Wrapper for synchronizing the state of the network for the given miner or validator.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="atom.base.neuron.BaseNeuron.wallet">
+<span class="sig-name descname"><span class="pre">wallet</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">Wallet</span></code></em><a class="headerlink" href="#atom.base.neuron.BaseNeuron.wallet" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-atom.base.ttl">
+<span id="atom-base-ttl-module"></span><h2>atom.base.ttl module<a class="headerlink" href="#module-atom.base.ttl" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="atom.base.ttl.ttl_cache">
+<span class="sig-prename descclassname"><span class="pre">atom.base.ttl.</span></span><span class="sig-name descname"><span class="pre">ttl_cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maxsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ttl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/ttl.html#ttl_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.ttl.ttl_cache" title="Link to this definition">#</a></dt>
+<dd><p>Decorator that creates a cache of the most recently used function calls with a time-to-live (TTL) feature.
+The cache evicts the least recently used entries if the cache exceeds the <cite>maxsize</cite> or if an entry has
+been in the cache longer than the <cite>ttl</cite> period.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maxsize</strong> (<em>int</em>) – Maximum size of the cache. Once the cache grows to this size, subsequent entries
+replace the least recently used ones. Defaults to 128.</p></li>
+<li><p><strong>typed</strong> (<em>bool</em>) – If set to True, arguments of different types will be cached separately. For example,
+f(3) and f(3.0) will be treated as distinct calls with distinct results. Defaults to False.</p></li>
+<li><p><strong>ttl</strong> (<em>int</em>) – The time-to-live for each cache entry, measured in seconds. If set to a non-positive value,
+the TTL is set to a very large number, effectively making the cache entries permanent. Defaults to -1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A decorator that can be applied to functions to cache their return values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Callable</p>
+</dd>
+</dl>
+<p>The decorator is useful for caching results of functions that are expensive to compute and are called
+with the same arguments frequently within short periods of time. The TTL feature helps in ensuring
+that the cached values are not stale.</p>
+<p class="rubric">Example</p>
+<p>&#64;ttl_cache(ttl=10)
+def get_data(param):</p>
+<blockquote>
+<div><p># Expensive data retrieval operation
+return data</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="atom.base.ttl.ttl_get_block">
+<span class="sig-prename descclassname"><span class="pre">atom.base.ttl.</span></span><span class="sig-name descname"><span class="pre">ttl_get_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/ttl.html#ttl_get_block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.ttl.ttl_get_block" title="Link to this definition">#</a></dt>
+<dd><p>Retrieves the current block number from the blockchain. This method is cached with a time-to-live (TTL)
+of 12 seconds, meaning that it will only refresh the block number from the blockchain at most every 12 seconds,
+reducing the number of calls to the underlying blockchain interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The current block number on the blockchain.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+<p>This method is useful for applications that need to access the current block number frequently and can
+tolerate a delay of up to 12 seconds for the latest information. By using a cache with TTL, the method
+efficiently reduces the workload on the blockchain interface.</p>
+<p class="rubric">Example</p>
+<p>current_block = ttl_get_block(self)</p>
+<p>Note: self here is the miner or validator instance</p>
+</dd></dl>
+
+</section>
+<section id="module-atom.base.validator">
+<span id="atom-base-validator-module"></span><h2>atom.base.validator module<a class="headerlink" href="#module-atom.base.validator" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="atom.base.validator.BaseValidatorNeuron">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">atom.base.validator.</span></span><span class="sig-name descname"><span class="pre">BaseValidatorNeuron</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/validator.html#BaseValidatorNeuron"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.validator.BaseValidatorNeuron" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#atom.base.neuron.BaseNeuron" title="atom.base.neuron.BaseNeuron"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseNeuron</span></code></a></p>
+<p>Base class for Bittensor validators. Your validator should inherit from this class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.validator.BaseValidatorNeuron.add_args">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/validator.html#BaseValidatorNeuron.add_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.validator.BaseValidatorNeuron.add_args" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.validator.BaseValidatorNeuron.async_updater">
+<em class="property"><span class="pre">async</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">async_updater</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/validator.html#BaseValidatorNeuron.async_updater"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.validator.BaseValidatorNeuron.async_updater" title="Link to this definition">#</a></dt>
+<dd><p>Intended to be run as an async entrypoint for the validator to:
+1. Sync the metagraph.
+2. Set the weights.
+3. Save the state of the validator.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.validator.BaseValidatorNeuron.load_state">
+<span class="sig-name descname"><span class="pre">load_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/validator.html#BaseValidatorNeuron.load_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.validator.BaseValidatorNeuron.load_state" title="Link to this definition">#</a></dt>
+<dd><p>Loads the state of the validator from a file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.validator.BaseValidatorNeuron.resync_metagraph">
+<span class="sig-name descname"><span class="pre">resync_metagraph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/validator.html#BaseValidatorNeuron.resync_metagraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.validator.BaseValidatorNeuron.resync_metagraph" title="Link to this definition">#</a></dt>
+<dd><p>Resyncs the metagraph and updates the hotkeys and moving averages based on the new metagraph.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.validator.BaseValidatorNeuron.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/validator.html#BaseValidatorNeuron.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.validator.BaseValidatorNeuron.run" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.validator.BaseValidatorNeuron.save_state">
+<span class="sig-name descname"><span class="pre">save_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/validator.html#BaseValidatorNeuron.save_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.validator.BaseValidatorNeuron.save_state" title="Link to this definition">#</a></dt>
+<dd><p>Saves the state of the validator to a file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.validator.BaseValidatorNeuron.serve_axon">
+<span class="sig-name descname"><span class="pre">serve_axon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/validator.html#BaseValidatorNeuron.serve_axon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.validator.BaseValidatorNeuron.serve_axon" title="Link to this definition">#</a></dt>
+<dd><p>Serve axon to enable external connections</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.validator.BaseValidatorNeuron.set_weights">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/validator.html#BaseValidatorNeuron.set_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.validator.BaseValidatorNeuron.set_weights" title="Link to this definition">#</a></dt>
+<dd><p>Sets the validator weights to the metagraph hotkeys based on the scores it has received from the miners.
+The weights determine the trust and incentive level the validator assigns to miner nodes on the network.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.validator.BaseValidatorNeuron.update_scores">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rewards</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uids</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/validator.html#BaseValidatorNeuron.update_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.validator.BaseValidatorNeuron.update_scores" title="Link to this definition">#</a></dt>
+<dd><p>Performs exponential moving average on the scores based on the rewards received from the miners.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-atom.base.weights">
+<span id="atom-base-weights-module"></span><h2>atom.base.weights module<a class="headerlink" href="#module-atom.base.weights" title="Link to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="atom.base.weights.ValidatorWeightSettingMixin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">atom.base.weights.</span></span><span class="sig-name descname"><span class="pre">ValidatorWeightSettingMixin</span></span><a class="reference internal" href="_modules/atom/base/weights.html#ValidatorWeightSettingMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.weights.ValidatorWeightSettingMixin" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to handle the functional separation of setting weights for the validator.</p>
+<p>This is an example of a Mixin class that can be used to separate the functionality of setting weights for the validator from the main class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.weights.ValidatorWeightSettingMixin.set_weights">
+<span class="sig-name descname"><span class="pre">set_weights</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/weights.html#ValidatorWeightSettingMixin.set_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.weights.ValidatorWeightSettingMixin.set_weights" title="Link to this definition">#</a></dt>
+<dd><p>Sets the validator weights to the metagraph hotkeys based on the scores it has received from the miners. The weights determine the trust and incentive level the validator assigns to miner nodes on the network.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="atom.base.weights.ValidatorWeightSettingMixin.update_scores">
+<span class="sig-name descname"><span class="pre">update_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rewards</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uids</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/atom/base/weights.html#ValidatorWeightSettingMixin.update_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#atom.base.weights.ValidatorWeightSettingMixin.update_scores" title="Link to this definition">#</a></dt>
+<dd><p>Performs exponential moving average on the scores based on the rewards received from the miners.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-atom.base">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-atom.base" title="Link to this heading">#</a></h2>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">atom documentation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="atom.chain.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">atom.chain package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-atom.base.config">atom.base.config module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.config.add_args"><code class="docutils literal notranslate"><span class="pre">add_args()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.config.add_miner_args"><code class="docutils literal notranslate"><span class="pre">add_miner_args()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.config.add_validator_args"><code class="docutils literal notranslate"><span class="pre">add_validator_args()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.config.check_config"><code class="docutils literal notranslate"><span class="pre">check_config()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.config.config"><code class="docutils literal notranslate"><span class="pre">config()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-atom.base.miner">atom.base.miner module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.miner.BaseMinerNeuron"><code class="docutils literal notranslate"><span class="pre">BaseMinerNeuron</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.miner.BaseMinerNeuron.add_args"><code class="docutils literal notranslate"><span class="pre">BaseMinerNeuron.add_args()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.miner.BaseMinerNeuron.blacklist"><code class="docutils literal notranslate"><span class="pre">BaseMinerNeuron.blacklist()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.miner.BaseMinerNeuron.priority"><code class="docutils literal notranslate"><span class="pre">BaseMinerNeuron.priority()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.miner.BaseMinerNeuron.resync_metagraph"><code class="docutils literal notranslate"><span class="pre">BaseMinerNeuron.resync_metagraph()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.miner.BaseMinerNeuron.run"><code class="docutils literal notranslate"><span class="pre">BaseMinerNeuron.run()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.miner.BaseMinerNeuron.set_weights"><code class="docutils literal notranslate"><span class="pre">BaseMinerNeuron.set_weights()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-atom.base.neuron">atom.base.neuron module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron"><code class="docutils literal notranslate"><span class="pre">BaseNeuron</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.add_args"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.add_args()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.block"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.block</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.check_config"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.check_config()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.check_registered"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.check_registered()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.config"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.config()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.forward"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.forward()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.load_state"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.load_state()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.metagraph"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.metagraph</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.run"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.run()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.run_in_background_thread"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.run_in_background_thread()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.save_state"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.save_state()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.should_set_weights"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.should_set_weights()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.should_sync_metagraph"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.should_sync_metagraph()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.spec_version"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.spec_version</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.stop_run_thread"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.stop_run_thread()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.subtensor"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.subtensor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.sync"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.sync()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.neuron.BaseNeuron.wallet"><code class="docutils literal notranslate"><span class="pre">BaseNeuron.wallet</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-atom.base.ttl">atom.base.ttl module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.ttl.ttl_cache"><code class="docutils literal notranslate"><span class="pre">ttl_cache()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.ttl.ttl_get_block"><code class="docutils literal notranslate"><span class="pre">ttl_get_block()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-atom.base.validator">atom.base.validator module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.add_args"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.add_args()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.async_updater"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.async_updater()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.load_state"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.load_state()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.resync_metagraph"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.resync_metagraph()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.run"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.run()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.save_state"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.save_state()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.serve_axon"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.serve_axon()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.set_weights"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.set_weights()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.validator.BaseValidatorNeuron.update_scores"><code class="docutils literal notranslate"><span class="pre">BaseValidatorNeuron.update_scores()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-atom.base.weights">atom.base.weights module</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.weights.ValidatorWeightSettingMixin"><code class="docutils literal notranslate"><span class="pre">ValidatorWeightSettingMixin</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.weights.ValidatorWeightSettingMixin.set_weights"><code class="docutils literal notranslate"><span class="pre">ValidatorWeightSettingMixin.set_weights()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#atom.base.weights.ValidatorWeightSettingMixin.update_scores"><code class="docutils literal notranslate"><span class="pre">ValidatorWeightSettingMixin.update_scores()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-atom.base">Module contents</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Macrocosmos
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Macrocosmos.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
