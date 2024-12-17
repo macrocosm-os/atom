@@ -25,6 +25,10 @@ jobs:
         with:
           poetry-version: "1.8.4"  # Use the desired Poetry version
 
+      - name: Install Dependencies
+        run: | 
+          poetry install --no-root
+
       - name: Build HTML
         run: | 
           cd docs/
