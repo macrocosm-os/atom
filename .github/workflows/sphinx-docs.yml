@@ -27,12 +27,12 @@ jobs:
 
       - name: Install Dependencies
         run: | 
-          poetry install --no-root
+          poetry install --only dev --no-root
 
       - name: Build HTML
         run: | 
           cd docs/
-          make html
+          poetry run make html
 
       - name: Run ghp-import
         run: | 
