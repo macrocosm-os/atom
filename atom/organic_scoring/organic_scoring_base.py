@@ -1,6 +1,6 @@
 import asyncio
 from abc import ABC, abstractmethod
-from typing import Any, Literal, Optional, Sequence, Union, Tuple, Callable
+from typing import Any, Literal, Optional, Sequence, Union, Tuple
 
 import bittensor as bt
 
@@ -9,7 +9,53 @@ from atom.organic_scoring.synth_dataset import SynthDatasetBase
 from atom.organic_scoring.utils import is_overridden
 
 
+"""
+Base module for organic scoring mechanisms in the Atom framework.
+
+This module provides the foundation for implementing organic scoring systems,
+which combine both synthetic and organic data processing for reward calculation
+and weight adjustment in the network.
+"""
+
+
 class OrganicScoringBase(ABC):
+    """
+    Abstract base class for organic scoring implementations.
+
+    This class provides the framework for processing both organic and synthetic data,
+    managing scoring frequencies, and handling weight updates in the network. It runs
+    asynchronously and can be triggered either by time intervals or step counts.
+
+    Args:
+        axon (bt.axon): The axon instance for network communication.
+        synth_dataset (Optional[Union[SynthDatasetBase, Sequence[SynthDatasetBase]]]): 
+            Synthetic dataset(s) for training. If None, only organic data will be used.
+        trigger_frequency (Union[float, int]): Frequency of organic scoring reward steps.
+        trigger (Literal["seconds", "steps"]): Trigger type for scoring:
+            - "seconds": Wait specified number of seconds between steps
+            - "steps": Wait specified number of steps between updates
+        trigger_frequency_min (Union[float, int], optional): Minimum frequency value.
+            Defaults to 2.
+        trigger_scaling_factor (Union[float, int], optional): Scaling factor for
+            adjusting trigger frequency based on queue size. Higher values mean slower
+            adjustment. Must be > 0. Defaults to 5.
+        organic_queue (Optional[OrganicQueueBase], optional): Queue for storing organic
+            samples. Defaults to OrganicQueue.
+
+    Attributes:
+        _axon: The axon instance used for network communication.
+        _should_exit: Flag indicating if the scoring loop should terminate.
+        _is_running: Flag indicating if the scoring loop is active.
+        _synth_dataset: Collection of synthetic datasets.
+        _trigger_frequency: Base frequency for triggering scoring steps.
+        _trigger: Type of trigger mechanism used.
+        _trigger_min: Minimum allowed trigger frequency.
+        _trigger_scaling_factor: Factor for dynamic frequency adjustment.
+        _organic_queue: Queue storing organic samples.
+        _step_counter: Counter for step-based triggering.
+        _step_lock: Lock for thread-safe step counter operations.
+    """
+
     def __init__(
         self,
         axon: bt.axon,
@@ -111,33 +157,78 @@ class OrganicScoringBase(ABC):
 
     @abstractmethod
     async def _on_organic_entry(self, synapse: bt.Synapse) -> bt.Synapse:
-        """Handle an organic entry.
+        """
+        Process an incoming organic sample.
 
-        Important: this method must add the required values to the `_organic_queue`.
+        This abstract method must be implemented by subclasses to handle incoming
+        organic samples and add them to the organic queue.
 
         Args:
-            synapse: The synapse to handle.
+            synapse (bt.Synapse): The incoming synapse containing the organic sample.
 
         Returns:
-            bt.StreamingSynapse: The handled synapse.
+            bt.Synapse: The processed synapse.
+
+        Note:
+            Implementations MUST add required values to self._organic_queue.
         """
         raise NotImplementedError
 
     async def _priority_fn(self, synapse: bt.Synapse) -> float:
-        """Priority function to sort the organic queue."""
+        """
+        Calculate priority for organic sample processing.
+
+        Args:
+            synapse (bt.Synapse): The synapse to evaluate.
+
+        Returns:
+            float: Priority value, higher values indicate higher priority.
+                Defaults to 0.0.
+        """
         return 0.0
 
     async def _blacklist_fn(self, synapse: bt.Synapse) -> Tuple[bool, str]:
-        """Blacklist function for organic handles."""
+        """
+        Determine if a synapse should be blacklisted.
+
+        Args:
+            synapse (bt.Synapse): The synapse to evaluate.
+
+        Returns:
+            Tuple[bool, str]: A tuple containing:
+                - bool: True if blacklisted, False otherwise
+                - str: Reason for blacklisting (empty if not blacklisted)
+        """
         return False, ""
 
     async def _verify_fn(self, synapse: bt.Synapse) -> bool:
-        """Function to verify requests for organic handles."""
+        """
+        Verify if a synapse request is valid.
+
+        Args:
+            synapse (bt.Synapse): The synapse to verify.
+
+        Returns:
+            bool: True if the request is valid, False otherwise.
+        """
         return True
 
     async def start_loop(self):
-        """The main loop for running the organic scoring task, either based on a time interval or steps.
-        Calls the `sample` method to establish the sampling logic for the organic scoring task.
+        """
+        Main execution loop for the organic scoring task.
+
+        This asynchronous loop runs continuously until _should_exit is set to True.
+        It handles both time-based and step-based triggering mechanisms, executing
+        the forward pass and managing the waiting period between iterations.
+
+        The loop:
+        1. Checks trigger conditions (time or steps)
+        2. Executes the forward pass
+        3. Calculates the next waiting period
+        4. Handles any exceptions during execution
+
+        Raises:
+            Logs errors that occur during execution but doesn't terminate the loop.
         """
         while not self._should_exit:
             if self._trigger == "steps":
@@ -168,26 +259,22 @@ class OrganicScoringBase(ABC):
         ...
 
     async def wait_until_next(self, timer_elapsed: float = 0):
-        """Wait until next iteration dynamically based on the size of the organic queue and the elapsed time.
+        """
+        Dynamically adjust and wait for the next iteration based on queue size.
 
-        This method implements an annealing sampling rate that adapts to the growth of the organic queue,
-        ensuring the system can keep up with the data processing demands.
+        Implements an adaptive waiting mechanism that adjusts the sampling rate
+        based on the current size of the organic queue. This ensures efficient
+        processing as the queue size changes.
 
         Args:
-            timer_elapsed: The time elapsed during the current iteration of the processing loop. This is used
-                to calculate the remaining sleep duration when the trigger is based on seconds.
+            timer_elapsed (float, optional): Time spent in the current processing
+                iteration. Used for time-based triggers. Defaults to 0.
 
-        Behavior:
-            - If the trigger is set to "seconds", the method calculates a dynamic frequency based on the current queue
-            size and the scaling factor, then sleeps for the remaining duration after considering the elapsed time.
-            - If the trigger is set to "steps", the method adjusts the step counter dynamically based on the current
-            queue size and the scaling factor, ensuring that the system can keep up with the processing demands.
-
-        Dynamic Adjustment:
-            - The `dynamic_frequency` is calculated by reducing the original frequency by a value proportional to the
-            queue size divided by the scaling factor. It ensures the frequency does not drop below `min_seconds`.
-            - The `dynamic_steps` is calculated similarly, reducing the original step count by a value proportional
-            to the queue size divided by the scaling factor. It ensures the steps do not drop below `min_steps`.
+        Dynamic Adjustment Formula:
+            - For time-based triggers: 
+              wait_time = max(base_frequency - (queue_size / scaling_factor), min_frequency)
+            - For step-based triggers:
+              steps = int(max(base_steps - (queue_size / scaling_factor), min_steps))
         """
         # Annealing sampling rate logic.
         dynamic_unit = self.sample_rate_dynamic()
@@ -204,7 +291,17 @@ class OrganicScoringBase(ABC):
                     await asyncio.sleep(1)
 
     def sample_rate_dynamic(self) -> float:
-        """Returns dynamic sampling rate based on the size of the organic queue."""
+        """
+        Calculate the dynamic sampling rate based on organic queue size.
+
+        Returns:
+            float: The adjusted sampling rate. For time-based triggers, returns
+                seconds to wait. For step-based triggers, returns the number of
+                steps (as an integer).
+
+        Formula:
+            rate = max(trigger_frequency - (queue_size / scaling_factor), trigger_min)
+        """
         size = self._organic_queue.size
         delay = max(
             self._trigger_frequency - (size / self._trigger_scaling_factor),
