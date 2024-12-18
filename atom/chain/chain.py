@@ -1,22 +1,42 @@
+"""Chain module for interacting with the Bittensor blockchain.
+
+This module provides functionality for storing and retrieving information on the Bittensor
+blockchain through the ChainStore class. It handles both reading and writing operations
+with appropriate subprocess management and timeout controls.
+"""
+
 import functools
 from typing import Optional
-
-from atom.chain.generic import run_in_subprocess
-
 import bittensor as bt
 from bittensor.extrinsics.serving import publish_metadata
 
+from atom.chain.generic import run_in_subprocess
 
 class ChainStore:
-    """Chain based implementation for storing and retrieving information on chain."""
+    """Chain based implementation for storing and retrieving information on chain.
+    
+    This class provides methods to read from and write to the Bittensor blockchain,
+    handling all necessary subprocess management and timeout controls.
+
+    Args:
+        netuid (int): The network UID to interact with
+        chain (str, optional): The chain to connect to. Defaults to "finney"
+        wallet (bt.wallet, optional): The wallet used for chain operations. Required for writing. Defaults to None
+    """
 
     def __init__(
         self,
         netuid: int,
         chain: str = "finney",
-        # Wallet is only needed to write to the chain, not to read.
         wallet: Optional[bt.wallet] = None,
     ):
+        """Initialize the ChainStore instance.
+
+        Args:
+            netuid (int): The network UID to interact with
+            chain (str, optional): The chain to connect to. Defaults to "finney"
+            wallet (bt.wallet, optional): The wallet used for chain operations. Required for writing. Defaults to None
+        """
         if wallet is None:
             bt.logging.warning(
                 "No wallet provided. You will not be able to write to the chain."
@@ -32,7 +52,16 @@ class ChainStore:
         wait_for_inclusion: bool = True,
         wait_for_finalization: bool = True,
     ):
-        """write to the subnet chain for a specific wallet."""
+        """Write data to the subnet chain for a specific wallet.
+
+        Args:
+            data (str): The data to write to the chain
+            wait_for_inclusion (bool, optional): Whether to wait for the transaction to be included. Defaults to True
+            wait_for_finalization (bool, optional): Whether to wait for the transaction to be finalized. Defaults to True
+
+        Raises:
+            ValueError: If no wallet is available or if no data is provided
+        """
         if self.wallet is None:
             raise ValueError("No wallet available to write to the chain.")
         if not data:
@@ -54,7 +83,14 @@ class ChainStore:
         run_in_subprocess(partial, 60)
 
     async def read(self, hotkey: str) -> str:
-        """Reads the most recent data from the chain from the specified hotkey."""
+        """Read the most recent data from the chain for the specified hotkey.
+
+        Args:
+            hotkey (str): The hotkey to read data from
+
+        Returns:
+            str: The decoded data from the chain, or None if no data is found
+        """
 
         # Wrap calls to the subtensor in a subprocess with a timeout to handle potential hangs.
         partial = functools.partial(
