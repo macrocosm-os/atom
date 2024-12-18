@@ -18,14 +18,29 @@ from atom.base.config import add_miner_args
 class BaseMinerNeuron(BaseNeuron):
     """
     Base class for Bittensor miners.
+
+    This class provides the fundamental structure and functionality for miners in the Bittensor network.
+    It handles network registration, request processing, and network synchronization.
     """
 
     @classmethod
     def add_args(cls, parser: argparse.ArgumentParser):
+        """
+        Adds miner-specific arguments to the command line parser.
+
+        Args:
+            parser (argparse.ArgumentParser): The argument parser to add arguments to.
+        """
         super().add_args(parser)
         add_miner_args(cls, parser)
 
     def __init__(self, config=None):
+        """
+        Initializes the BaseMinerNeuron.
+
+        Args:
+            config: Configuration object containing miner settings. Defaults to None.
+        """
         super().__init__(config=config)
 
         # Warn if allowing incoming requests from anyone.
@@ -62,6 +77,7 @@ class BaseMinerNeuron(BaseNeuron):
         Initiates and manages the main loop for the miner on the Bittensor network. The main loop handles graceful shutdown on keyboard interrupts and logs unforeseen errors.
 
         This function performs the following primary tasks:
+        
         1. Check for registration on the Bittensor network.
         2. Starts the miner's axon, making it active on the network.
         3. Periodically resynchronizes with the chain; updating the metagraph with the latest network state and setting weights.
@@ -86,14 +102,17 @@ class BaseMinerNeuron(BaseNeuron):
         # Serve passes the axon information to the network + netuid we are hosting on.
         # This will auto-update if the axon port of external ip have changed.
         bt.logging.info(
-            f"Serving miner axon {self.axon} on network: {self.config.subtensor.chain_endpoint} with netuid: {self.config.netuid}"
+            "Serving miner axon %s on network: %s with netuid: %s",
+            self.axon,
+            self.config.subtensor.chain_endpoint,
+            self.config.netuid
         )
         self.axon.serve(netuid=self.config.netuid, subtensor=self.subtensor)
 
         # Start  starts the miner's axon, making it active on the network.
         self.axon.start()
 
-        bt.logging.info(f"Miner starting at block: {self.block}")
+        bt.logging.info("Miner starting at block: %s", self.block)
 
         # This loop maintains the miner's operations until intentionally stopped.
         try:
@@ -109,12 +128,15 @@ class BaseMinerNeuron(BaseNeuron):
 
         # In case of unforeseen errors, the miner will log the error and continue operations.
         except Exception as e:
-            bt.logging.error(traceback.format_exc())
+            bt.logging.error("Error: %s\n%s", str(e), traceback.format_exc())
 
     def __enter__(self):
         """
         Starts the miner's operations in a background thread upon entering the context.
         This method facilitates the use of the miner in a 'with' statement.
+
+        Returns:
+            BaseMinerNeuron: The instance of the miner.
         """
         self.run_in_background_thread()
         return self
@@ -126,46 +148,59 @@ class BaseMinerNeuron(BaseNeuron):
 
         Args:
             exc_type: The type of the exception that caused the context to be exited.
-                      None if the context was exited without an exception.
+                     None if the context was exited without an exception.
             exc_value: The instance of the exception that caused the context to be exited.
-                       None if the context was exited without an exception.
+                      None if the context was exited without an exception.
             traceback: A traceback object encoding the stack trace.
-                       None if the context was exited without an exception.
+                      None if the context was exited without an exception.
         """
         self.stop_run_thread()
 
     def resync_metagraph(self):
-        """Resyncs the metagraph and updates the hotkeys and moving averages based on the new metagraph."""
+        """
+        Resyncs the metagraph and updates network state.
+
+        Updates the local copy of the network's metagraph, including hotkeys and moving averages,
+        by synchronizing with the latest state of the Bittensor network.
+        """
         bt.logging.info("resync_metagraph()")
 
         # Sync the metagraph.
         self.metagraph.sync(subtensor=self.subtensor)
 
     def set_weights(self):
+        """
+        Empty implementation as miners do not set weights on the network.
+        
+        This method is inherited from BaseNeuron but is intentionally left empty as
+        miners are not responsible for setting weights - this is a validator function.
+        """
         pass
 
     @abstractmethod
     def blacklist(self, synapse: bt.Synapse) -> Tuple[bool, str]:
         """
-        Blacklist function for miner handles.
+        Determines whether to blacklist an incoming request.
 
         Args:
-            synapse: The synapse to handle.
+            synapse (bt.Synapse): The synapse object containing the request details.
 
         Returns:
-            bool: Whether to blacklist the synapse or not.
+            Tuple[bool, str]: A tuple containing:
+                - bool: Whether to blacklist the request (True) or not (False)
+                - str: A message explaining the blacklist decision
         """
         ...
 
     @abstractmethod
     def priority(self, synapse: bt.Synapse) -> float:
         """
-        Priority function for miner handles.
+        Determines the priority level of an incoming request.
 
         Args:
-            synapse: The synapse to handle.
+            synapse (bt.Synapse): The synapse object containing the request details.
 
         Returns:
-            float: The priority of the synapse.
+            float: The priority value assigned to the request. Higher values indicate higher priority.
         """
         ...

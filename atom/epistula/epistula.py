@@ -9,23 +9,46 @@ from typing import Dict, Any, Optional, Annotated
 from .__init__ import EPISTULA_VERSION
 from pydantic import BaseModel, Field, ValidationError
 
-class VerifySignatureRequest(BaseModel):
-    """
-    Pydantic model for the verify_signature input parameters.
-    """
-    body: bytes  # Directly use bytes
-    timestamp: int
-    signature: Annotated[str, Field(pattern=r"^0x[a-fA-F0-9]{64}$")]  # Ensures signature format
-    uuid: Annotated[str, Field(min_length=36, max_length=36)]  # UUID with constraints
-    signed_by: str
-    signed_for: Optional[str] = None
-    now: Optional[int] = None
+"""Cryptographic signature management module for secure message handling.
 
+This module provides a robust framework for generating and verifying cryptographic
+signatures for messages in a distributed system. It implements time-based validation,
+UUID tracking, and optional recipient-specific signing.
+
+Key Features:
+    - Message signature generation and verification
+    - Time-based signature validation with configurable time windows
+    - Support for recipient-specific message signing
+    - Comprehensive input validation using Pydantic
+    - JSON message body handling
+"""
+
+class VerifySignatureRequest(BaseModel):
+    """Validation model for signature verification requests.
+    
+    This Pydantic model enforces strict typing and format validation for all
+    parameters required in the signature verification process.
+
+    Attributes:
+        body (bytes): The raw message body to verify
+        timestamp (int): Unix timestamp in milliseconds when the message was signed
+        signature (str): Hex-encoded signature with '0x' prefix, must be 64 characters
+        uuid (str): Unique identifier for the message, must be valid UUID format
+        signed_by (str): The SS58 address of the signing keypair
+        signed_for (Optional[str]): The intended recipient's address, if any
+        now (Optional[int]): Current timestamp for testing purposes
+    """
 
 class Epistula:
-    """
-    Manages the generation and verification of cryptographic signatures for messages.
-    Handles both header generation and signature verification in a unified interface.
+    """Cryptographic signature manager for secure message handling.
+
+    This class provides a comprehensive interface for generating and verifying
+    cryptographic signatures in a distributed messaging system. It supports
+    time-based validation windows and recipient-specific signing.
+
+    Attributes:
+        ALLOWED_DELTA_MS (int): Maximum allowed time difference in milliseconds
+            between message timestamp and verification time
     """
 
     def __init__(self, allowed_delta_ms: Optional[int] = None):
@@ -37,16 +60,26 @@ class Epistula:
         body: bytes,
         signed_for: Optional[str] = None,
     ) -> Dict[str, Any]:
-        """
-        Generate headers containing signatures and metadata for a message.
+        """Generate cryptographic headers for a message.
+
+        Creates a complete set of headers including signatures and metadata
+        required for message verification. Optionally generates additional
+        time-based signatures for recipient-specific messages.
 
         Args:
-            hotkey: The keypair used for signing
-            body: The message body in bytes
-            signed_for: Receiver's address (optional)
+            hotkey: The keypair used for signing the message
+            body: Raw message content in bytes
+            signed_for: Optional recipient SS58 address for targeted messages
 
         Returns:
-            Dictionary containing all necessary headers
+            Dictionary containing all required headers:
+                - Epistula-Version: Protocol version
+                - Epistula-Timestamp: Message timestamp
+                - Epistula-Uuid: Unique message identifier
+                - Epistula-Signed-By: Sender's SS58 address
+                - Epistula-Request-Signature: Primary message signature
+                - Epistula-Signed-For: (Optional) Recipient's address
+                - Epistula-Secret-Signature-[0-2]: (Optional) Time-based signatures
         """
         timestamp = round(time.time() * 1000)
         timestampInterval = ceil(timestamp / 1e4) * 1e4
@@ -88,20 +121,30 @@ class Epistula:
         signed_for: Optional[str] = None,
         now: Optional[int] = None,
     ) -> Optional[Annotated[str, "Error Message"]]:
-        """
-        Verify the signature of a message.
+        """Verify the authenticity of a signed message.
+
+        Performs comprehensive validation including:
+            - Input format validation
+            - Timestamp freshness check
+            - Cryptographic signature verification
+            - Optional recipient validation
 
         Args:
-            signature: The signature to verify
-            body: Message body in bytes
-            timestamp: Message timestamp
-            uuid: Message UUID
-            signed_by: Sender's address
-            signed_for: Receiver's address (optional)
-            now: Current timestamp (defaults to current time if not provided) in seconds
+            signature: Hex-encoded signature with '0x' prefix
+            body: Raw message content in bytes
+            timestamp: Message timestamp in milliseconds
+            uuid: Unique message identifier
+            signed_by: Sender's SS58 address
+            signed_for: Optional recipient's SS58 address
+            now: Optional timestamp for testing purposes
 
         Returns:
-            None if verification succeeds, error message string if it fails
+            None if verification succeeds, or an error message string describing
+            the reason for validation failure
+
+        Note:
+            The verification will fail if the message is too old (exceeds ALLOWED_DELTA_MS)
+            or if any of the cryptographic checks fail
         """
 
         #Pydantic will enforce the validation typing rules
@@ -139,5 +182,15 @@ class Epistula:
 
     @staticmethod
     def create_message_body(data: Dict) -> bytes:
-        """Utility method to create message body from dictionary data"""
+        """Convert a dictionary into a deterministic JSON-encoded byte string.
+
+        Creates a consistent byte representation of dictionary data for signing,
+        ensuring that the same input always produces the same output bytes.
+
+        Args:
+            data: Dictionary containing message data
+
+        Returns:
+            UTF-8 encoded bytes of the sorted JSON string representation
+        """
         return json.dumps(data, default=str, sort_keys=True).encode("utf-8")

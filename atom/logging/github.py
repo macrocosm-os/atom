@@ -1,3 +1,19 @@
+"""GitHub repository interaction module for version control operations.
+
+This module provides a robust interface for interacting with GitHub repositories,
+handling common operations like cloning, fetching, and managing file content across
+different commits. It implements safe cleanup and proper error handling.
+
+Key Features:
+    - Repository cloning and cleanup
+    - Commit-specific content retrieval
+    - File content management
+    - Automated branch handling
+
+Use cases include:
+- Dynamic Desirability (SN13)
+"""
+
 import os
 import shutil
 import subprocess
@@ -11,16 +27,35 @@ from abc import ABC, abstractmethod
 
 
 class BaseHandler(ABC):
+    """Abstract base class for content handlers.
+    
+    Defines the interface for content handling operations with get/put operations.
+    """
+
     @abstractmethod
     def get(self):
+        """Abstract method to retrieve content."""
         pass
 
     @abstractmethod
     def put(self):
+        """Abstract method to store content."""
         pass
 
 
 class GithubHandler(BaseHandler):
+    """Handles GitHub repository operations for content management.
+    
+    Manages repository cloning, content retrieval, and content storage operations
+    while maintaining proper cleanup of temporary files.
+
+    Attributes:
+        REPO_URL (str): URL of the GitHub repository
+        original_dir (str): Original working directory path
+        repo_name (str): Name of the repository
+        repo_path (str): Local path where repository is cloned
+    """
+
     def __init__(self, repo_url: str):
         self.REPO_URL = repo_url
 
@@ -29,7 +64,11 @@ class GithubHandler(BaseHandler):
         self.repo_path = os.path.join(self.original_dir, self.repo_name)
 
     def clone(self):
-        """Clones the self.REPO_URL repository into the current directory."""
+        """Clone the repository to local directory.
+        
+        Clones the repository if it doesn't already exist locally.
+        Logs the operation and handles potential Git errors.
+        """
         if not os.path.exists(self.repo_path):
             try:
                 bt.logging.info(f"Cloning repository: {self.REPO_URL}")
@@ -38,7 +77,11 @@ class GithubHandler(BaseHandler):
                 bt.logging.error(f"An error occurred during Git operations: {e}")
 
     def fetch_all(self):
-        """Fetch all changes from self.REPO_URL repository."""
+        """Fetch all changes from the remote repository.
+        
+        Updates the local repository with all remote changes.
+        Handles potential Git operation errors.
+        """
         try:
             bt.logging.info("Fetching latest changes")
             run_command(["git", "fetch", "--all"], cwd=self.repo_path)
@@ -48,15 +91,19 @@ class GithubHandler(BaseHandler):
             return None
 
     def get(self, commit_sha: str, filepath: str, reader: Callable = json_reader):
-        """Get content from a specific commit in the repository.
+        """Retrieve content from a specific commit.
 
         Args:
-            commit_sha (str): The commit hash to checkout.
-            filepath (str): The path to the file to read. Usually identified through the hotkey, f"{hotkey}.json"
-            reader (Callable, optional): Function that reads the datatype specified. Defaults to json_reader.
+            commit_sha (str): Hash of the target commit
+            filepath (str): Path to the target file within repository
+            reader (Callable): Function to read and parse the file content.
+                Defaults to json_reader
 
         Returns:
-            content: The content of the file in the specified commit.
+            The file content parsed by the reader function, or None if operation fails
+
+        Note:
+            Automatically handles repository cleanup after operation
         """
 
         try:
@@ -98,17 +145,28 @@ class GithubHandler(BaseHandler):
         hotkey: str,
         branch_name: str = "main",
     ) -> str:
-        """Put content into the repository.
+        """Store content in the repository.
+
+        Handles the entire process of adding content to the repository:
+            1. Clones/updates the repository
+            2. Creates necessary folders
+            3. Writes content to file
+            4. Commits and pushes changes
+            5. Verifies push success
+            6. Cleans up local files
 
         Args:
-            content (str): The content to be written into the file.
-            folder_name (str): Relative or absolute name of the folder to write the file into.
-            file_ext (str): The datatype of the saved file. E.g. "json"
-            hotkey (str): Validator hotkey.
-            branch_name (str): The branch to commit the changes to. E.g. "main"
+            content (str): Content to store in the file
+            folder_name (str): Target folder path in repository
+            file_ext (str): File extension (e.g., "json")
+            hotkey (str): Validator hotkey used in commit message
+            branch_name (str): Target branch name, defaults to "main"
 
         Returns:
-            str: _description_
+            str: Remote commit hash after successful push
+
+        Note:
+            Automatically handles repository cleanup after operation
         """
 
         self.clone()

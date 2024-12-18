@@ -17,15 +17,39 @@ from atom.base.config import add_validator_args
 
 class BaseValidatorNeuron(BaseNeuron):
     """
-    Base class for Bittensor validators. Your validator should inherit from this class.
+    Base class for Bittensor validators.
+
+    This class provides the fundamental structure and functionality for validators in the Bittensor network.
+    It handles network synchronization, weight setting, and score management for miners in the network.
+
+    Attributes:
+        hotkeys (List[str]): Copy of metagraph hotkeys for local reference
+        dendrite (bt.dendrite): Interface for sending messages to other nodes
+        scores (torch.FloatTensor): Scoring weights for validation
+        should_exit (bool): Flag indicating if validator should stop
+        is_running (bool): Flag indicating if validator is currently running
+        thread (threading.Thread): Background thread for validator operations
+        lock (asyncio.Lock): Lock for thread-safe operations
     """
 
     @classmethod
     def add_args(cls, parser: argparse.ArgumentParser):
+        """
+        Adds validator-specific arguments to the command line parser.
+
+        Args:
+            parser (argparse.ArgumentParser): The argument parser to add arguments to.
+        """
         super().add_args(parser)
         add_validator_args(cls, parser)
 
     def __init__(self, config=None):
+        """
+        Initializes the BaseValidatorNeuron.
+
+        Args:
+            config: Configuration object containing validator settings. Defaults to None.
+        """
         super().__init__(config=config)
 
         # Save a copy of the hotkeys to local memory.
@@ -64,10 +88,14 @@ class BaseValidatorNeuron(BaseNeuron):
         self.lock = asyncio.Lock()
 
     async def async_updater(self):
-        """Intended to be run as an async entrypoint for the validator to:
-        1. Sync the metagraph.
-        2. Set the weights.
-        3. Save the state of the validator.
+        """
+        Asynchronous update loop for the validator.
+
+        This method runs continuously in the background, performing the following tasks:
+        1. Synchronizes the metagraph with the network
+        2. Sets validator weights
+        3. Saves the validator state
+        4. Waits for the configured epoch length before the next update
         """
         bt.logging.info("starting the sync_loop")
         while True:
@@ -76,13 +104,24 @@ class BaseValidatorNeuron(BaseNeuron):
             await asyncio.sleep(self.config.neuron.epoch_length * SECONDS_PER_BLOCK)
 
     def serve_axon(self):
-        """Serve axon to enable external connections"""
+        """
+        Serves the validator's axon to enable external connections.
+
+        Attempts to start the axon service on the specified network UID.
+        Logs an error if the axon fails to start.
+        """
         try:
             self.axon.serve(netuid=self.config.netuid, subtensor=self.subtensor).start()
         except Exception as e:
             bt.logging.error(f"Failed to serve axon: {e}")
 
     def run(self):
+        """
+        Starts the validator's operations.
+
+        Returns:
+            BaseValidatorNeuron: The validator instance.
+        """
         return self
 
     def __enter__(self):
@@ -91,8 +130,12 @@ class BaseValidatorNeuron(BaseNeuron):
 
     async def __aenter__(self):
         """
-        Entry point for the validator to start running in the background.
-        Indended to be overwritten by the user, as this is an example.
+        Asynchronous context manager entry point.
+
+        Creates and starts the background update task for the validator.
+
+        Returns:
+            BaseValidatorNeuron: The validator instance.
         """
         bt.logging.debug("Starting validator in background thread.")
         self.loop.create_task(self.async_updater())
@@ -102,15 +145,11 @@ class BaseValidatorNeuron(BaseNeuron):
     def __exit__(self, exc_type, exc_value, traceback):
         """
         Stops the validator's background operations upon exiting the context.
-        This method facilitates the use of the validator in a 'with' statement.
 
         Args:
             exc_type: The type of the exception that caused the context to be exited.
-                      None if the context was exited without an exception.
             exc_value: The instance of the exception that caused the context to be exited.
-                       None if the context was exited without an exception.
             traceback: A traceback object encoding the stack trace.
-                       None if the context was exited without an exception.
         """
         if self.is_running:
             bt.logging.debug("Stopping validator in background thread.")
@@ -120,7 +159,16 @@ class BaseValidatorNeuron(BaseNeuron):
             bt.logging.debug("Stopped")
 
     def resync_metagraph(self):
-        """Resyncs the metagraph and updates the hotkeys and moving averages based on the new metagraph."""
+        """
+        Resyncs the metagraph and updates the hotkeys and scores.
+
+        This method:
+        1. Creates a copy of the current metagraph state
+        2. Syncs with the network to get the latest state
+        3. Updates scores for any replaced hotkeys
+        4. Adjusts the size of scoring tensors if the network has grown
+        5. Updates the local hotkey cache
+        """
         bt.logging.info("resync_metagraph()")
 
         # Copies state of metagraph before syncing.
@@ -154,7 +202,14 @@ class BaseValidatorNeuron(BaseNeuron):
         self.hotkeys = copy.deepcopy(self.metagraph.hotkeys)
 
     def save_state(self):
-        """Saves the state of the validator to a file."""
+        """
+        Saves the validator's state to a file.
+
+        Saves the following information:
+        - Current step
+        - Validation scores
+        - Hotkey list
+        """
         bt.logging.info("Saving validator state.")
 
         # Save the state of the validator to file.
@@ -168,7 +223,16 @@ class BaseValidatorNeuron(BaseNeuron):
         )
 
     def load_state(self):
-        """Loads the state of the validator from a file."""
+        """
+        Loads the validator's state from a file.
+
+        Attempts to load:
+        - Step count
+        - Validation scores
+        - Hotkey list
+
+        If no state file exists, starts with fresh state.
+        """
         try:
             state = torch.load(self.config.neuron.full_path + "/state.pt")
             self.step = state["step"]
@@ -182,12 +246,25 @@ class BaseValidatorNeuron(BaseNeuron):
 
     @abstractmethod
     def set_weights(self):
-        """Sets the validator weights to the metagraph hotkeys based on the scores it has received from the miners.
-        The weights determine the trust and incentive level the validator assigns to miner nodes on the network.
+        """
+        Sets the validator weights for the network.
+
+        This abstract method must be implemented by subclasses to define how
+        the validator assigns trust and incentive weights to miners based on
+        their performance scores.
         """
         raise NotImplementedError
 
     @abstractmethod
     def update_scores(self, rewards: torch.FloatTensor, uids: List[int]):
-        """Performs exponential moving average on the scores based on the rewards received from the miners."""
+        """
+        Updates the scores for miners using exponential moving average.
+
+        Args:
+            rewards (torch.FloatTensor): The rewards tensor for miners
+            uids (List[int]): List of miner UIDs corresponding to the rewards
+
+        This abstract method must be implemented by subclasses to define how
+        the validator updates its scoring mechanism based on miner performance.
+        """
         raise NotImplementedError

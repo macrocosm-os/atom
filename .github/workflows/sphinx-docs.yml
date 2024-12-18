@@ -1,0 +1,38 @@
+name: Build and Deploy Sphinx Documentation
+
+on:
+  push:
+    branches:
+      - docs  # Trigger workflow on push to the docs branch
+
+jobs:
+  build:
+    name: Build Sphinx Documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'  # Adjust the version to match your project
+
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: "1.8.4"  # Use the desired Poetry version
+
+      - name: Install Dependencies
+        run: | 
+          poetry install --no-root
+
+      - name: Build HTML
+        run: | 
+          cd docs/
+          poetry run make html
+
+      - name: Run ghp-import
+        run: | 
+            poetry run ghp-import -n -p -f docs/_build/html
