@@ -8,7 +8,8 @@ from abc import ABC, abstractmethod
 import bittensor as bt
 
 from atom.base.ttl import ttl_get_block
-from atom.base.config import check_config, add_args, config
+from atom.base.config import check_config, add_args
+from atom.base.config import config as bittensor_config
 
 from atom.mock.mock import MockSubtensor, MockMetagraph, create_wallet
 
@@ -48,14 +49,14 @@ class BaseNeuron(ABC):
         add_args(cls, parser)
 
     @classmethod
-    def config(cls):
+    def get_config(cls):
         """
         Returns the default configuration for the neuron.
 
         Returns:
             bt.Config: Default configuration object
         """
-        return config(cls)
+        return bittensor_config(cls)
 
     subtensor: "bt.subtensor"
     wallet: "bt.wallet"
@@ -83,8 +84,8 @@ class BaseNeuron(ABC):
         return ttl_get_block(self)
 
     def __init__(self, config=None):
-        base_config = copy.deepcopy(config or BaseNeuron.config())
-        self.config = self.config()
+        base_config = copy.deepcopy(config or BaseNeuron.get_config())
+        self.config = self.get_config()
         self.config.merge(base_config)
         self.check_config(self.config)
 
