@@ -185,8 +185,8 @@ class S3Handler(BaseHandler):
         
     def put(
         self, 
-        file_path: str, 
-        location: str,
+        local_file_path: str, 
+        s3_bucket_location: str,
         content_type: Optional[str] = None,
         public: bool = False,
     ):
@@ -194,24 +194,24 @@ class S3Handler(BaseHandler):
         Upload a file to a specific location in the S3 bucket.
 
         Args:
-            file_path (str): The local path to the file to upload.
-            location (str): The destination path within the bucket.
+            local_file_path (str): The local path to the file to upload.
+            s3_bucket_location (str): The destination path within the bucket.
             content_type (str, optional): The MIME type of the file. If not provided, inferred from file extension.
             public (bool): Whether to make the uploaded file publicly accessible. Defaults to False.
         """
 
         try:
-            file_name = file_path.split("/")[-1]
-            key = f"{location}/{file_name}"
+            file_name = local_file_path.split("/")[-1]
+            key = f"{s3_bucket_location}/{file_name}"
 
-            with open(file_path, "rb") as file:
+            with open(local_file_path, "rb") as file:
                 data = file.read()
 
             # Infer MIME type from file extension if not provided
             if not content_type:
                 content_type = (
                     self.custom_mime_types.get(file_name[file_name.rfind(".") :])  
-                    or mimetypes.guess_type(file_path)[0]  
+                    or mimetypes.guess_type(local_file_path)[0]  
                     or "application/octet-stream" 
                 )
 
@@ -230,7 +230,7 @@ class S3Handler(BaseHandler):
             )
 
         except FileNotFoundError:
-            print(f"File '{file_path}' not found. Ensure the path is correct.")
+            print(f"File '{local_file_path}' not found. Ensure the path is correct.")
             raise
         except Exception as e:
             print(f"An error occurred while uploading the file:{e}")
