@@ -202,7 +202,7 @@ class S3Handler(BaseHandler):
 
         try:
             file_name = local_file_path.split("/")[-1]
-            key = f"{s3_bucket_location}/{file_name}"
+            key = os.path.join(s3_bucket_location, file_name)
 
             with open(local_file_path, "rb") as file:
                 data = file.read()
