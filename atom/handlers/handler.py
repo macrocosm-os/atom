@@ -3,12 +3,13 @@ import shutil
 import subprocess
 
 import bittensor as bt
-from typing import Callable
+import mimetypes
+from typing import Callable, Optional
 
 from atom.utils import run_command
 from atom.chain.chain_utils import json_reader
 from abc import ABC, abstractmethod
-
+from atom.handlers.s3_client import S3Client
 
 class BaseHandler(ABC):
     @abstractmethod
@@ -160,3 +161,79 @@ class GithubHandler(BaseHandler):
         shutil.rmtree(self.repo_name)
 
         return remote_commit_hash
+
+
+class S3Handler(BaseHandler):
+    """Handles DigitalOcean Spaces S3 operations for content management.
+
+    Manages file content retrieval and storage operations using DigitalOcean Spaces S3.
+    """
+
+    def __init__(self, bucket_name: str, s3_client: S3Client, custom_mime_types: Optional[dict] = None):
+        """
+        Initializes the handler with a bucket name and an s3 client. 
+
+        Args:
+        bucket_name (str): The name of the s3 bucket to interact with. 
+        s3_client (S3Client): The s3 client to interact with the bucket.
+        custom_mime_types (dict[str, str], optional): A dictionary of custom mime types for specific file extensions. Defaults to None.
+        """
+
+        self.bucket_name = bucket_name
+        self.s3_client = s3_client
+        self.custom_mime_types = {}
+        
+    def put(
+        self, 
+        local_file_path: str, 
+        s3_bucket_location: str,
+        content_type: Optional[str] = None,
+        public: bool = False,
+    ):
+        """
+        Upload a file to a specific location in the S3 bucket.
+
+        Args:
+            local_file_path (str): The local path to the file to upload.
+            s3_bucket_location (str): The destination path within the bucket.
+            content_type (str, optional): The MIME type of the file. If not provided, inferred from file extension.
+            public (bool): Whether to make the uploaded file publicly accessible. Defaults to False.
+        """
+
+        try:
+            file_name = local_file_path.split("/")[-1]
+            key = os.path.join(s3_bucket_location, file_name)
+
+            with open(local_file_path, "rb") as file:
+                data = file.read()
+
+            # Infer MIME type from file extension if not provided
+            if not content_type:
+                content_type = (
+                    self.custom_mime_types.get(file_name[file_name.rfind(".") :])  
+                    or mimetypes.guess_type(local_file_path)[0]  
+                    or "application/octet-stream" 
+                )
+
+            
+            # Upload the file to the bucket. 
+            self.s3_client.s3_client.put_object(
+                Bucket=self.bucket_name, 
+                Key=key, 
+                Body=data,
+                ContentType=content_type,
+                ACL="public-read" if public else "private",
+            )
+
+            print(
+                f"File '{file_name}' successfully uploaded to '{key}' in bucket '{self.bucket_name}' with content type '{content_type}'."
+            )
+
+        except FileNotFoundError:
+            print(f"File '{local_file_path}' not found. Ensure the path is correct.")
+            raise
+        except Exception as e:
+            print(f"An error occurred while uploading the file:{e}")
+            raise 
+
+        
