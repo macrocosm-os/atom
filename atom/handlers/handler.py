@@ -4,7 +4,7 @@ import subprocess
 
 import bittensor as bt
 import mimetypes
-from typing import Callable, Optional
+from typing import Callable, Optional, Union
 
 from atom.utils import run_command
 from atom.chain.chain_utils import json_reader
@@ -197,7 +197,7 @@ class S3Handler(BaseHandler):
         s3_bucket_location: str,
         content_type: Optional[str] = None,
         public: bool = False,
-    ):
+    ) -> Union[str, bool]:
         """
         Upload a file to a specific location in the S3 bucket.
 
@@ -206,6 +206,9 @@ class S3Handler(BaseHandler):
             s3_bucket_location (str): The destination path within the bucket.
             content_type (str, optional): The MIME type of the file. If not provided, inferred from file extension.
             public (bool): Whether to make the uploaded file publicly accessible. Defaults to False.
+
+        Returns:
+            Union[str, bool]: The key of the uploaded file if successful, False otherwise.
         """
 
         try:
@@ -215,7 +218,7 @@ class S3Handler(BaseHandler):
             with open(local_file_path, "rb") as file:
                 data = file.read()
 
-            # Infer MIME type from file extension if not provided
+            # Infer MIME type
             if not content_type:
                 content_type = (
                     self.custom_mime_types.get(file_name[file_name.rfind(".") :])
@@ -223,7 +226,7 @@ class S3Handler(BaseHandler):
                     or "application/octet-stream"
                 )
 
-            # Upload the file to the bucket.
+            # Upload
             self.s3_client.s3_client.put_object(
                 Bucket=self.bucket_name,
                 Key=key,
@@ -231,8 +234,30 @@ class S3Handler(BaseHandler):
                 ContentType=content_type,
                 ACL="public-read" if public else "private",
             )
-
+            return key
         except FileNotFoundError:
-            raise
+            return False
         except Exception as e:
-            raise
+            return False
+
+    def get(self, s3_key: str, local_file_path: str) -> bool:
+        """Retrieves a file from the S3 bucket.
+
+        Args:
+            s3_key (str): The key of the object in the S3 bucket.
+            local_file_path (str): The path where the file should be saved locally.
+
+        Returns:
+            bool: True if the file was successfully retrieved and saved, False otherwise.
+        """
+        try:
+            # Download the object from S3 and save it locally
+            with open(local_file_path, "wb") as file:
+                self.s3_client.s3_client.download_fileobj(
+                    self.bucket_name, s3_key, file
+                )
+            return True
+        except self.s3_client.s3_client.exceptions.NoSuchKey:
+            return False
+        except Exception as e:
+            return False
