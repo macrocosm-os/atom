@@ -21,11 +21,12 @@ class S3Client:
     ):
         """
         Initializes the S3 client
+
         Args:
-        region_name (str): The region name
-        endpoint_url (str): The endpoint URL
-        access_key_id (str): The access key ID
-        secret_access_key (str): The secret access key
+            region_name (str): The region name
+            endpoint_url (str): The endpoint URL
+            access_key_id (str): The access key ID
+            secret_access_key (str): The secret access key
         """
 
         self.s3_client = boto3.session.Session().client(
