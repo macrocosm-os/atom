@@ -9,7 +9,7 @@ from typing import Callable, Optional
 from atom.utils import run_command
 from atom.chain.chain_utils import json_reader
 from abc import ABC, abstractmethod
-from atom.handlers.s3_client import S3Client
+from atom.handlers.s3_client import S3Client, S3_CONFIG
 
 class BaseHandler(ABC):
     @abstractmethod
@@ -169,7 +169,9 @@ class S3Handler(BaseHandler):
     Manages file content retrieval and storage operations using DigitalOcean Spaces S3.
     """
 
-    def __init__(self, bucket_name: str, s3_client: S3Client, custom_mime_types: Optional[dict] = None):
+    default_s3_client = S3Client(**S3_CONFIG)
+
+    def __init__(self, bucket_name: str, s3_client: Optional[S3Client] = None, custom_mime_types: Optional[dict] = None):
         """
         Initializes the handler with a bucket name and an s3 client. 
 
@@ -180,8 +182,8 @@ class S3Handler(BaseHandler):
         """
 
         self.bucket_name = bucket_name
-        self.s3_client = s3_client
-        self.custom_mime_types = {}
+        self.s3_client = s3_client or self.default_s3_client
+        self.custom_mime_types = custom_mime_types or {}
         
     def put(
         self, 
@@ -214,7 +216,6 @@ class S3Handler(BaseHandler):
                     or mimetypes.guess_type(local_file_path)[0]  
                     or "application/octet-stream" 
                 )
-
             
             # Upload the file to the bucket. 
             self.s3_client.s3_client.put_object(
@@ -225,15 +226,9 @@ class S3Handler(BaseHandler):
                 ACL="public-read" if public else "private",
             )
 
-            print(
-                f"File '{file_name}' successfully uploaded to '{key}' in bucket '{self.bucket_name}' with content type '{content_type}'."
-            )
-
         except FileNotFoundError:
-            print(f"File '{local_file_path}' not found. Ensure the path is correct.")
             raise
         except Exception as e:
-            print(f"An error occurred while uploading the file:{e}")
             raise 
 
         
