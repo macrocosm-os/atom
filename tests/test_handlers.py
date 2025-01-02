@@ -21,7 +21,7 @@ def test_initialization(s3_handler, mock_s3_client):
 
 def test_put_success(s3_handler, mock_s3_client, tmp_path):
     """Test successful file upload."""
-    # Create a temporary file
+    # Temporary file
     temp_file = tmp_path / "test.txt"
     temp_file.write_text("Sample data")
 
@@ -29,7 +29,6 @@ def test_put_success(s3_handler, mock_s3_client, tmp_path):
 
     result = s3_handler.put(str(temp_file), "test-folder", public=True)
 
-    # Assert the key is returned correctly
     assert result == "test-folder/test.txt"
     mock_s3_client.s3_client.put_object.assert_called_once_with(
         Bucket="test-bucket",
@@ -69,11 +68,10 @@ def test_get_success(s3_handler, mock_s3_client, tmp_path):
 
 def test_get_no_such_key(s3_handler, mock_s3_client):
     """Test download with a nonexistent key."""
-    # Mock the NoSuchKey exception
     mock_s3_client.s3_client.exceptions = MagicMock()
     mock_s3_client.s3_client.exceptions.NoSuchKey = FileNotFoundError
 
-    # Simulate the NoSuchKey exception
+    # NoSuchKey exception
     mock_s3_client.s3_client.download_fileobj.side_effect = mock_s3_client.s3_client.exceptions.NoSuchKey("No such key")
 
     result = s3_handler.get("nonexistent-key", "local-path.txt")
