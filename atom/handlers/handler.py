@@ -11,6 +11,7 @@ from atom.chain.chain_utils import json_reader
 from abc import ABC, abstractmethod
 from atom.handlers.s3_client import S3Client, S3_CONFIG
 
+
 class BaseHandler(ABC):
     @abstractmethod
     def get(self):
@@ -171,12 +172,17 @@ class S3Handler(BaseHandler):
 
     default_s3_client = S3Client(**S3_CONFIG)
 
-    def __init__(self, bucket_name: str, s3_client: Optional[S3Client] = None, custom_mime_types: Optional[dict] = None):
+    def __init__(
+        self,
+        bucket_name: str,
+        s3_client: Optional[S3Client] = None,
+        custom_mime_types: Optional[dict] = None,
+    ):
         """
-        Initializes the handler with a bucket name and an s3 client. 
+        Initializes the handler with a bucket name and an s3 client.
 
         Args:
-        bucket_name (str): The name of the s3 bucket to interact with. 
+        bucket_name (str): The name of the s3 bucket to interact with.
         s3_client (S3Client): The s3 client to interact with the bucket.
         custom_mime_types (dict[str, str], optional): A dictionary of custom mime types for specific file extensions. Defaults to None.
         """
@@ -184,10 +190,10 @@ class S3Handler(BaseHandler):
         self.bucket_name = bucket_name
         self.s3_client = s3_client or self.default_s3_client
         self.custom_mime_types = custom_mime_types or {}
-        
+
     def put(
-        self, 
-        local_file_path: str, 
+        self,
+        local_file_path: str,
         s3_bucket_location: str,
         content_type: Optional[str] = None,
         public: bool = False,
@@ -212,15 +218,15 @@ class S3Handler(BaseHandler):
             # Infer MIME type from file extension if not provided
             if not content_type:
                 content_type = (
-                    self.custom_mime_types.get(file_name[file_name.rfind(".") :])  
-                    or mimetypes.guess_type(local_file_path)[0]  
-                    or "application/octet-stream" 
+                    self.custom_mime_types.get(file_name[file_name.rfind(".") :])
+                    or mimetypes.guess_type(local_file_path)[0]
+                    or "application/octet-stream"
                 )
-            
-            # Upload the file to the bucket. 
+
+            # Upload the file to the bucket.
             self.s3_client.s3_client.put_object(
-                Bucket=self.bucket_name, 
-                Key=key, 
+                Bucket=self.bucket_name,
+                Key=key,
                 Body=data,
                 ContentType=content_type,
                 ACL="public-read" if public else "private",
@@ -229,6 +235,4 @@ class S3Handler(BaseHandler):
         except FileNotFoundError:
             raise
         except Exception as e:
-            raise 
-
-        
+            raise

@@ -1,5 +1,5 @@
 import boto3
-import os 
+import os
 
 S3_CONFIG = {
     "region_name": os.getenv("S3_REGION"),
@@ -8,10 +8,17 @@ S3_CONFIG = {
     "secret_access_key": os.getenv("S3_SECRET"),
 }
 
+
 class S3Client:
     """Creates an S3 client"""
 
-    def __init__(self, region_name: str, endpoint_url: str, access_key_id: str, secret_access_key: str):
+    def __init__(
+        self,
+        region_name: str,
+        endpoint_url: str,
+        access_key_id: str,
+        secret_access_key: str,
+    ):
         """
         Initializes the S3 client
         Args:
