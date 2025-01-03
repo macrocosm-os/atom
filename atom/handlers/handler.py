@@ -1,6 +1,7 @@
 import os
 import shutil
 import subprocess
+import boto3
 
 import bittensor as bt
 import mimetypes
@@ -9,8 +10,13 @@ from typing import Callable, Optional, Union
 from atom.utils import run_command
 from atom.chain.chain_utils import json_reader
 from abc import ABC, abstractmethod
-from atom.handlers.s3_client import S3Client, S3_CONFIG
 
+S3_CONFIG = {
+    "region_name": os.getenv("S3_REGION"),
+    "endpoint_url": os.getenv("S3_ENDPOINT"),
+    "access_key_id": os.getenv("S3_KEY"),
+    "secret_access_key": os.getenv("S3_SECRET"),
+}
 
 class BaseHandler(ABC):
     @abstractmethod
@@ -163,6 +169,26 @@ class GithubHandler(BaseHandler):
 
         return remote_commit_hash
 
+def create_s3_client(region_name: str, endpoint_url: str, access_key_id: str, secret_access_key: str):
+    """
+    Creates and returns an S3 client.
+
+    Args:
+        region_name (str): The region name
+        endpoint_url (str): The endpoint URL
+        access_key_id (str): The access key ID
+        secret_access_key (str): The secret access key
+
+    Returns:
+        boto3.client: An S3 client instance
+    """
+    return boto3.session.Session().client(
+        "s3",
+        region_name=region_name,
+        endpoint_url=endpoint_url,
+        aws_access_key_id=access_key_id,
+        aws_secret_access_key=secret_access_key,
+    )
 
 class S3Handler(BaseHandler):
     """Handles DigitalOcean Spaces S3 operations for content management.
@@ -170,12 +196,12 @@ class S3Handler(BaseHandler):
     Manages file content retrieval and storage operations using DigitalOcean Spaces S3.
     """
 
-    default_s3_client = S3Client(**S3_CONFIG)
+    s3_client = create_s3_client(**S3_CONFIG)
 
     def __init__(
         self,
         bucket_name: str,
-        s3_client: Optional[S3Client] = None,
+        s3_client = None,
         custom_mime_types: Optional[dict] = None,
     ):
         """
@@ -183,7 +209,7 @@ class S3Handler(BaseHandler):
 
         Args:
         bucket_name (str): The name of the s3 bucket to interact with.
-        s3_client (S3Client): The s3 client to interact with the bucket.
+        s3_client: The s3 client to interact with the bucket. Defaults to None.
         custom_mime_types (dict[str, str], optional): A dictionary of custom mime types for specific file extensions. Defaults to None.
         """
 
