@@ -43,3 +43,16 @@ We use poetry to handle dependancies that are within `atom`.
 brew install python@3.11
 bash install.sh
 ```
+
+## Generating the S3_CONFIG Dictionary
+
+The `S3_CONFIG` dictionary is used to configure access to an S3-compatible object storage service. It relies on environment variables for secure and flexible configuration. Below are the steps to set up and use the `S3_CONFIG` dictionary:
+
+### 1. Required Environment Variables
+The following environment variables need to be set in your system or application environment:
+- `S3_REGION`: The AWS region or S3-compatible region where your bucket is located.
+- `S3_ENDPOINT`: The endpoint URL for your S3-compatible service (e.g., `https://s3.amazonaws.com` for AWS S3).
+- `S3_KEY`: Your S3 access key ID.
+- `S3_SECRET`: Your S3 secret access key.
+
+
