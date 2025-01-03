@@ -169,7 +169,7 @@ class GithubHandler(BaseHandler):
 
         return remote_commit_hash
 
-def create_s3_client(region_name: str, endpoint_url: str, access_key_id: str, secret_access_key: str):
+def create_s3_client(region_name: str, endpoint_url: str, access_key_id: str, secret_access_key: str) -> boto3.client:
     """
     Creates and returns an S3 client.
 
