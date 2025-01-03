@@ -44,11 +44,14 @@ brew install python@3.11
 bash install.sh
 ```
 
-## Generating the S3_CONFIG Dictionary
+## Handlers
 
-The `S3_CONFIG` dictionary is used to configure access to an S3-compatible object storage service. It relies on environment variables for secure and flexible configuration. Below are the steps to set up and use the `S3_CONFIG` dictionary:
+### S3Handler
 
-### 1. Required Environment Variables
+The `S3Handler` class handles DigitalOcean Spaces S3 operations for content management. It manages file content retrieval and storage operations using DigitalOcean Spaces S3.
+
+#### Required Environment Variables
+
 The following environment variables need to be set in your system or application environment:
 - `S3_REGION`: The AWS region or S3-compatible region where your bucket is located.
 - `S3_ENDPOINT`: The endpoint URL for your S3-compatible service (e.g., `https://s3.amazonaws.com` for AWS S3).
