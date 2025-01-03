@@ -1,14 +1,22 @@
 import os
 import shutil
 import subprocess
+import boto3
 
 import bittensor as bt
-from typing import Callable
+import mimetypes
+from typing import Callable, Optional, Union
 
 from atom.utils import run_command
 from atom.chain.chain_utils import json_reader
 from abc import ABC, abstractmethod
 
+S3_CONFIG = {
+    "region_name": os.getenv("S3_REGION"),
+    "endpoint_url": os.getenv("S3_ENDPOINT"),
+    "access_key_id": os.getenv("S3_KEY"),
+    "secret_access_key": os.getenv("S3_SECRET"),
+}
 
 class BaseHandler(ABC):
     @abstractmethod
@@ -160,3 +168,122 @@ class GithubHandler(BaseHandler):
         shutil.rmtree(self.repo_name)
 
         return remote_commit_hash
+
+def create_s3_client(region_name: str, endpoint_url: str, access_key_id: str, secret_access_key: str) -> boto3.client:
+    """
+    Creates and returns an S3 client.
+
+    Args:
+        region_name (str): The region name
+        endpoint_url (str): The endpoint URL
+        access_key_id (str): The access key ID
+        secret_access_key (str): The secret access key
+
+    Returns:
+        boto3.client: An S3 client instance
+    """
+    return boto3.session.Session().client(
+        "s3",
+        region_name=region_name,
+        endpoint_url=endpoint_url,
+        aws_access_key_id=access_key_id,
+        aws_secret_access_key=secret_access_key,
+    )
+
+class S3Handler(BaseHandler):
+    """Handles DigitalOcean Spaces S3 operations for content management.
+
+    Manages file content retrieval and storage operations using DigitalOcean Spaces S3.
+    """
+
+    s3_client = create_s3_client(**S3_CONFIG)
+
+    def __init__(
+        self,
+        bucket_name: str,
+        s3_client = None,
+        custom_mime_types: Optional[dict] = None,
+    ):
+        """
+        Initializes the handler with a bucket name and an s3 client.
+
+        Args:
+        bucket_name (str): The name of the s3 bucket to interact with.
+        s3_client: The s3 client to interact with the bucket. Defaults to None.
+        custom_mime_types (dict[str, str], optional): A dictionary of custom mime types for specific file extensions. Defaults to None.
+        """
+
+        self.bucket_name = bucket_name
+        self.s3_client = s3_client or self.default_s3_client
+        self.custom_mime_types = custom_mime_types or {}
+
+    def put(
+        self,
+        local_file_path: str,
+        s3_bucket_location: str,
+        content_type: Optional[str] = None,
+        public: bool = False,
+    ) -> Union[str, bool]:
+        """
+        Upload a file to a specific location in the S3 bucket.
+
+        Args:
+            local_file_path (str): The local path to the file to upload.
+            s3_bucket_location (str): The destination path within the bucket.
+            content_type (str, optional): The MIME type of the file. If not provided, inferred from file extension.
+            public (bool): Whether to make the uploaded file publicly accessible. Defaults to False.
+
+        Returns:
+            Union[str, bool]: The key of the uploaded file if successful, False otherwise.
+        """
+
+        try:
+            file_name = local_file_path.split("/")[-1]
+            key = os.path.join(s3_bucket_location, file_name)
+
+            with open(local_file_path, "rb") as file:
+                data = file.read()
+
+            # Infer MIME type
+            if not content_type:
+                content_type = (
+                    self.custom_mime_types.get(file_name[file_name.rfind(".") :])
+                    or mimetypes.guess_type(local_file_path)[0]
+                    or "application/octet-stream"
+                )
+
+            # Upload
+            self.s3_client.s3_client.put_object(
+                Bucket=self.bucket_name,
+                Key=key,
+                Body=data,
+                ContentType=content_type,
+                ACL="public-read" if public else "private",
+            )
+            return key
+        except FileNotFoundError:
+            return False
+        except Exception as e:
+            return False
+
+    def get(self, s3_key: str, local_file_path: str) -> bool:
+        """Retrieves a file from the S3 bucket.
+
+        Args:
+            s3_key (str): The key of the object in the S3 bucket.
+            local_file_path (str): The path where the file should be saved locally.
+
+        Returns:
+            bool: True if the file was successfully retrieved and saved, False otherwise.
+        """
+        try:
+            # Download the object from S3 and save it locally
+            with open(local_file_path, "wb") as file:
+                self.s3_client.s3_client.download_fileobj(
+                    self.bucket_name, s3_key, file
+                )
+            return True
+        except self.s3_client.s3_client.exceptions.NoSuchKey:
+            return False
+        except Exception as e:
+            return False

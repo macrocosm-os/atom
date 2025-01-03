@@ -9,13 +9,17 @@ from typing import Dict, Any, Optional, Annotated
 from .__init__ import EPISTULA_VERSION
 from pydantic import BaseModel, Field, ValidationError
 
+
 class VerifySignatureRequest(BaseModel):
     """
     Pydantic model for the verify_signature input parameters.
     """
+
     body: bytes  # Directly use bytes
     timestamp: int
-    signature: Annotated[str, Field(pattern=r"^0x[a-fA-F0-9]{64}$")]  # Ensures signature format
+    signature: Annotated[
+        str, Field(pattern=r"^0x[a-fA-F0-9]{64}$")
+    ]  # Ensures signature format
     uuid: Annotated[str, Field(min_length=36, max_length=36)]  # UUID with constraints
     signed_by: str
     signed_for: Optional[str] = None
@@ -29,7 +33,9 @@ class Epistula:
     """
 
     def __init__(self, allowed_delta_ms: Optional[int] = None):
-        self.ALLOWED_DELTA_MS = allowed_delta_ms if allowed_delta_ms is not None else 8000
+        self.ALLOWED_DELTA_MS = (
+            allowed_delta_ms if allowed_delta_ms is not None else 8000
+        )
 
     def generate_header(
         self,
@@ -104,7 +110,7 @@ class Epistula:
             None if verification succeeds, error message string if it fails
         """
 
-        #Pydantic will enforce the validation typing rules
+        # Pydantic will enforce the validation typing rules
         try:
             VerifySignatureRequest(
                 body=body,

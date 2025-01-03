@@ -43,3 +43,19 @@ We use poetry to handle dependancies that are within `atom`.
 brew install python@3.11
 bash install.sh
 ```
+
+## Handlers
+
+### S3Handler
+
+The `S3Handler` class handles DigitalOcean Spaces S3 operations for content management. It manages file content retrieval and storage operations using DigitalOcean Spaces S3.
+
+#### Required Environment Variables
+
+The following environment variables need to be set in your system or application environment:
+- `S3_REGION`: The AWS region or S3-compatible region where your bucket is located.
+- `S3_ENDPOINT`: The endpoint URL for your S3-compatible service (e.g., `https://s3.amazonaws.com` for AWS S3).
+- `S3_KEY`: Your S3 access key ID.
+- `S3_SECRET`: Your S3 secret access key.
+
+
