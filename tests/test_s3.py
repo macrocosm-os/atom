@@ -1,13 +1,12 @@
 import pytest
 from unittest.mock import patch
-from atom.handlers.s3_client import S3Client
-
+from atom.handlers.handler import create_s3_client
 
 @patch("boto3.session.Session.client")
-def test_s3_client_initialization(mock_boto_client):
+def test_create_s3_client(mock_boto_client):
     mock_s3 = mock_boto_client.return_value
 
-    client = S3Client(
+    client = create_s3_client(
         region_name="mock-region",
         endpoint_url="http://mock-endpoint",
         access_key_id="mock-access-key",
@@ -21,4 +20,5 @@ def test_s3_client_initialization(mock_boto_client):
         aws_access_key_id="mock-access-key",
         aws_secret_access_key="mock-secret-key",
     )
-    assert client.s3_client == mock_s3
+
+    assert client == mock_s3
