@@ -13,6 +13,8 @@ nltk = "==3.8.1"
 loguru = "^0.7.2"
 torch = "2.3.0"
 substrate-interface = "^1.7.11"
+scikit-learn = "1.6.1"
+umap-learn = "0.5.7"
 
 [tool.poetry.dev-dependencies]
 black = "^23.9.1"
