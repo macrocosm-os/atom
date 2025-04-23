@@ -1,5 +1,6 @@
 import functools
 from typing import Optional
+from __future__ import annotations
 
 from atom.chain.generic import run_in_subprocess
 
@@ -13,7 +14,7 @@ class ChainStore:
     def __init__(
         self,
         netuid: int,
-        chain: str = "finney",
+        subtensor: bt.subtensor,
         # Wallet is only needed to write to the chain, not to read.
         wallet: Optional[bt.wallet] = None,
     ):
@@ -24,7 +25,7 @@ class ChainStore:
         self.wallet = wallet
 
         self.netuid = netuid
-        self.subtensor = bt.subtensor(network=chain)
+        self.subtensor = subtensor
 
     async def write(
         self,
